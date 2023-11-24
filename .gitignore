@@ -1,0 +1,6 @@
+.vs/
+*.sln
+/Backend
+/CinemaAppUnitTest
+/Client/src/pages/Home
+/Client/src/pages/Payment
