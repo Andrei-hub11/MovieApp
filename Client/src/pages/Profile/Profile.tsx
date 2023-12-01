@@ -14,7 +14,11 @@ import indicatorIcon from "../../assets/octicon_arrow-right-24.svg";
 import anakin from "../../assets/profile-image.jpg";
 import editIcon from "../../assets/ic_sharp-edit.svg";
 
-function Profile() {
+interface profileProps {
+  isUnique: boolean;
+}
+
+function Profile({ isUnique }: profileProps) {
   const indicatorProps: IndicatorProps = {
     sectionName: "Meu perfil",
     src: indicatorIcon,
@@ -28,7 +32,7 @@ function Profile() {
 
   return (
     <ProfileContainer>
-      <Indicator indicator={indicatorProps} />
+      <Indicator indicator={indicatorProps} $isUnique={isUnique} />
       <ProfileInformationContainer>
         <ContainerInner>
           <ProfileImage src={anakin} />

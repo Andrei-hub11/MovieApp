@@ -8,10 +8,13 @@ export interface SliderSettings {
   slidesToScroll: number;
   autoplay: boolean;
   autoplaySpeed: number;
+  prevArrow: React.ReactElement;
+  nextArrow: React.ReactElement;
 }
 
 export interface IconProps {
   $primary?: boolean;
+  srcset?: string;
   src: string;
   alt: string;
   onClick?: () => void | undefined;
@@ -20,6 +23,14 @@ export interface IconProps {
 export interface ButtonProps {
   $primary: boolean;
   onClick?: () => void | undefined;
+  $isUnique?: boolean;
+}
+
+interface Movie {
+  imageSrc: string;
+  altText: string;
+  status: string;
+  buttonText: string;
 }
 
 export interface IndicatorProps {
@@ -30,6 +41,7 @@ export interface IndicatorProps {
 
 export interface InputsProps {
   placeholder?: string;
+  $isError?: string;
   onChange?: () => void | undefined;
 }
 
@@ -39,6 +51,7 @@ export interface BtnList {
 }
 
 export interface DateList {
+  id: string;
   day: string;
   date: string;
 }
@@ -49,8 +62,24 @@ export interface LinkList {
   $primary: boolean;
 }
 
+export interface TicketList {
+  id: string;
+  orderId: string;
+  title: string;
+  subtitle?: string;
+  eventTime: Date;
+  eventDate: Date;
+  amountPaid: number;
+  purcheadSeats: string[];
+  isUsed: boolean;
+}
+
 export interface AppearanceProps {
   $primary?: boolean;
+  $hasColor?: string;
+  $isSelected?: boolean;
+  $isUnique?: boolean;
+  $isUsed?: boolean;
 }
 
 export interface GridContainerProps {
@@ -66,17 +95,14 @@ export interface AppearanceGroupProps {
   $hasMargin?: string;
 }
 
-export interface AppearanceBallProps {
-  $hasColor?: string;
-}
-
 export interface RouteObject {
   path: string;
   element: ReactElement;
 }
 
 export interface IconsList {
+  name: string;
   route: string;
   default: string;
-  selected?: string;
+  selected: string;
 }

@@ -7,10 +7,15 @@ interface BtnProps {
 }
 
 function Button({ btn, children }: BtnProps) {
-  const { $primary, onClick } = btn;
+  const { $primary, $isUnique, onClick } = btn;
 
   return (
-    <Btn $primary={$primary} onClick={onClick}>
+    <Btn
+      role="button"
+      $primary={$primary}
+      $isUnique={$isUnique}
+      onClick={onClick}
+    >
       {children}
     </Btn>
   );

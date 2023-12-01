@@ -9,32 +9,52 @@ export const CentralSection = styled.main`
 export const Container = styled.div`
   margin-top: 4rem;
 
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     margin-top: 2.7rem;
   }
 `;
 
 export const NavInputContainer = styled.div`
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     display: flex;
     justify-content: center;
     gap: 1.8rem;
     width: 100%;
   }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletLandscapeUp}) {
+    gap: 3rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    display: none;
+  }
 `;
 
 export const CategoryContainer = styled.div`
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     margin-top: 2.7rem;
     display: flex;
     flex-direction: column;
     padding: 0 3rem;
     gap: 1.5rem;
   }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletPortraitUp}) {
+    padding: 0 5rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletLandscapeUp}) {
+    padding: 0 9.1rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    display: none;
+  }
 `;
 
 export const CategoryContainerTitle = styled.div`
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     p {
       font-size: 1.6rem;
       font-family: ${({ theme: { fonts } }) => fonts[1]};
@@ -42,29 +62,61 @@ export const CategoryContainerTitle = styled.div`
       color: ${({ theme: { colors } }) => colors.text};
     }
   }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    p {
+      font-size: 2rem;
+    }
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletPortraitUp}) {
+    p {
+      font-size: 2.4rem;
+    }
+  }
 `;
 
 export const BtnsContainer = styled.div`
   display: flex;
 
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     display: flex;
     gap: 1.5rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    gap: 1.8rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletPortraitUp}) {
+    gap: 2.6rem;
   }
 `;
 
 export const PostersContainer = styled.div`
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     margin-top: 3rem;
     display: flex;
     padding: 0 3rem;
     flex-direction: column;
     gap: 2.1rem;
   }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletPortraitUp}) {
+    padding: 0 5rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletLandscapeUp}) {
+    padding: 0 9.1rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    display: none;
+  }
 `;
 
 export const PostersContainerTitle = styled.div`
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     p {
       font-size: 1.4rem;
       font-family: ${({ theme: { fonts } }) => fonts[1]};
@@ -74,10 +126,22 @@ export const PostersContainerTitle = styled.div`
       letter-spacing: 0.1rem;
     }
   }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    p {
+      font-size: 1.8rem;
+    }
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletPortraitUp}) {
+    p {
+      font-size: 2rem;
+    }
+  }
 `;
 
 export const PostersCarousel = styled(motion.div)`
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     cursor: grab;
     overflow: hidden;
     width: 100%;
@@ -85,21 +149,35 @@ export const PostersCarousel = styled(motion.div)`
 `;
 
 export const PostersCarouselInner = styled(motion.div)`
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     display: flex;
     gap: 2rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    gap: 3rem;
   }
 `;
 
 export const CarouselItem = styled(motion.div)`
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     min-height: 13rem;
     min-width: 9rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    min-height: 20.3rem;
+    min-width: 13.5rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletPortraitUp}) {
+    min-height: 26.2rem;
+    min-width: 18rem;
   }
 `;
 
 export const CarouselImage = styled(motion.img)`
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     width: 100%;
     height: 100%;
     pointer-events: none;
@@ -112,22 +190,58 @@ export const FlexContainer = styled.div`
   width: 80rem;
   border-color: white;
 
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     display: none;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    display: block;
   }
 `;
 
 export const SliderContainer = styled.div`
+  position: relative;
   p {
     color: #fff;
   }
 `;
 
+export const InnerSliderContainer = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  left: 7rem;
+  bottom: 5rem;
+`;
+
+export const Information = styled.h1`
+  font-family: ${({ theme: { fonts } }) => fonts[0]};
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: ${({ theme: { colors } }) => colors.text};
+`;
+
+export const SliderBtn = styled.a`
+  font-family: ${({ theme: { fonts } }) => fonts[0]};
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: ${({ theme: { colors } }) => colors.primary};
+  padding: 1rem 3rem;
+  background: ${({ theme: { colors } }) => colors.bg};
+  border-radius: 1rem;
+  cursor: pointer;
+`;
+
 export const SliderImg = styled.img`
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     object-fit: cover;
     width: 100%;
     height: auto;
     border-radius: 1rem;
   }
+`;
+
+export const MoveListContainer = styled.div`
+  display: flex;
 `;

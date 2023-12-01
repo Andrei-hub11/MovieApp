@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import { AppearanceProps } from "../../types";
 
-export const IndicatorContainer = styled.div`
+export const IndicatorContainer = styled.div<AppearanceProps>`
   margin: 1.5rem 1.5rem;
   padding: 0.5rem 1.5rem;
   display: flex;
@@ -8,6 +9,11 @@ export const IndicatorContainer = styled.div`
   gap: 1rem;
   width: 35rem;
   background: ${({ theme: { colors } }) => colors.primary};
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    margin: 0;
+    display: ${({ $isUnique }) => ($isUnique ? "none" : "")};
+  }
 `;
 
 export const SectionName = styled.p`

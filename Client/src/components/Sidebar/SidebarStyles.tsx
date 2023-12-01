@@ -6,8 +6,14 @@ export const Aside = styled.aside`
   border-right: 0.02rem solid rgba(255, 255, 255, 0.81);
   height: 100vh;
 
-  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     display: none;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    display: block;
+    position: fixed;
+    min-width: 24rem;
   }
 `;
 

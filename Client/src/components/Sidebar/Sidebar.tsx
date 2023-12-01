@@ -1,3 +1,7 @@
+import { useLocation } from "react-router-dom";
+
+import useRedirect from "../../utils/customHook/useRedirect/useRedirect";
+
 import {
   Aside,
   ProfileImage,
@@ -5,67 +9,37 @@ import {
   SideLInk,
   SideList,
 } from "./SidebarStyles";
-import Anakin from "../../assets/profile-image.jpg";
-import { LinkList } from "../../types";
-import Icon from "../Icon/Icon";
-import HomeIcon from "../../assets/mdi_home-outline.svg";
-import NotificationIcon from "../../assets/mingcute_notification-line.svg";
-import HistoricIcon from "../../assets/tabler_book.svg";
-import ProfileIcon from "../../assets/iconamoon_profile-bold.svg";
 
-const linkList: LinkList[] = [
-  {
-    icon: {
-      $primary: true,
-      src: HomeIcon,
-      alt: "home-icon",
-      onClick: undefined,
-    },
-    name: "Home",
-    $primary: true,
-  },
-  {
-    icon: {
-      $primary: true,
-      src: NotificationIcon,
-      alt: "notification-icon",
-      onClick: undefined,
-    },
-    name: "Notificações",
-    $primary: false,
-  },
-  {
-    icon: {
-      $primary: true,
-      src: HistoricIcon,
-      alt: "historic-icon",
-      onClick: undefined,
-    },
-    name: "Ingressos",
-    $primary: false,
-  },
-  {
-    icon: {
-      $primary: true,
-      src: ProfileIcon,
-      alt: "profile-icon",
-      onClick: undefined,
-    },
-    name: "Perfil",
-    $primary: false,
-  },
-];
+import Anakin from "../../assets/profile-image.jpg";
+import Icon from "../Icon/Icon";
+import { navicons } from "../../constants/constants";
 
 function Sidebar() {
+  const { redirectTo } = useRedirect();
+  const location = useLocation();
+
+  const currentPath: string = location.pathname;
+
   return (
     <Aside>
       <ProfileImageContainer>
         <ProfileImage src={Anakin} />
       </ProfileImageContainer>
       <SideList>
-        {linkList.map((link) => (
-          <SideLInk key={link.name} $primary={link.$primary}>
-            <Icon icon={link.icon} />
+        {navicons.map((link) => (
+          <SideLInk
+            key={link.route}
+            $primary={link.route === currentPath}
+            onClick={() => {
+              redirectTo(link.route);
+            }}
+          >
+            <Icon
+              icon={{
+                src: link.default,
+                alt: "icone de navegação",
+              }}
+            />
             {link.name}
           </SideLInk>
         ))}

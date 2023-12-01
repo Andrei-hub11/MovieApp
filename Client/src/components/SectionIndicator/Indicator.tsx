@@ -4,9 +4,10 @@ import { IndicatorContainer, SectionName } from "./IndicatorStyles";
 
 interface indicatorProps {
   indicator: IndicatorProps;
+  $isUnique?: boolean;
 }
 
-function Indicator({ indicator }: indicatorProps) {
+function Indicator({ indicator, $isUnique }: indicatorProps) {
   const { sectionName, src, alt } = indicator;
 
   const iconProps: IconProps = {
@@ -14,7 +15,7 @@ function Indicator({ indicator }: indicatorProps) {
     alt: alt,
   };
   return (
-    <IndicatorContainer>
+    <IndicatorContainer $isUnique={$isUnique}>
       <Icon icon={iconProps} />
       <SectionName>{sectionName}</SectionName>
     </IndicatorContainer>

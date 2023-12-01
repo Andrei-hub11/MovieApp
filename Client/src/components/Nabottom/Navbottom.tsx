@@ -23,7 +23,7 @@ function Navbottom() {
           >
             <img
               src={currentPath === icon.route ? icon.selected : icon.default}
-              loading="lazy"
+              loading="eager"
               alt="icone de navegação"
             />
           </NavBottomIconContainer>

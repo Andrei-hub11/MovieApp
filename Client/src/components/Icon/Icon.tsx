@@ -13,6 +13,7 @@ function Icon({ icon }: IconsProps) {
       $primary={$primary}
       alt={alt}
       onClick={onClick}
+      loading="eager"
       height={24}
       width={24}
     />

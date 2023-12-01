@@ -1,10 +1,15 @@
 * {
-  padding: 0;
   margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  text-decoration: none;
+  outline: none;
+  border: none;
 }
 
 html {
+  scroll-behavior: smooth;
   font-size: 62.5%;
 }
 
@@ -12,3 +17,28 @@ body {
   background: #080305;
 }
 
+/* Estilo para a classe wrapper do Slider */
+.slider-wrapper {
+  position: relative;
+}
+
+/* Estilo para reposicionar os dots */
+.slick-dots {
+  position: absolute;
+  bottom: 10px; /* Ajuste conforme necessário */
+  left: 0; /* Posiciona na extrema esquerda */
+  right: 1rem;
+  margin-right: auto;
+  text-align: right; /* Alinha o texto à esquerda */
+  width: 100%; /* Garante que ocupe toda a largura */
+  padding-right: 20px; /* Adiciona um espaçamento à esquerda para os dots */
+}
+
+.slick-dots li button:before {
+  color: #fff; /* Define a cor dos dots para branco */
+  opacity: 1;
+}
+
+.slick-dots li.slick-active button:before {
+  color: blue;
+}

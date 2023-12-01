@@ -9,7 +9,7 @@ export const Btn = styled.a<AppearanceProps>`
   background: ${({ theme: { colors }, $primary }) =>
     $primary ? colors.primary_btn : colors.secondary_btn};
   color: ${({ theme: { colors }, $primary }) =>
-    $primary ? colors.secondary_text : "#000"};
+    $primary ? colors.light : "#000"};
   padding: 0.6rem 2.5rem;
   cursor: pointer;
   font-weight: 400;
@@ -19,6 +19,7 @@ export const Btn = styled.a<AppearanceProps>`
       ? `.2rem solid ${colors.primary_btn}`
       : `.2rem solid ${colors.primary_btn}`};
   outline: none;
+  flex: ${({ $isUnique }) => ($isUnique ? "1" : "")};
 
   &:hover {
     background: ${({ theme: { colors }, $primary }) =>
@@ -28,5 +29,13 @@ export const Btn = styled.a<AppearanceProps>`
     color: ${({ theme: { colors }, $primary }) =>
       $primary ? "#000" : colors.secondary_btn};
     transition: 0.3s ease-out;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    font-size: 1.8rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    padding: 0.2rem 1.8rem;
   }
 `;

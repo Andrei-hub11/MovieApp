@@ -14,11 +14,14 @@ import {
   CentralSection,
   Container,
   FlexContainer,
+  Information,
+  InnerSliderContainer,
   NavInputContainer,
   PostersCarousel,
   PostersCarouselInner,
   PostersContainer,
   PostersContainerTitle,
+  SliderBtn,
   SliderContainer,
   SliderImg,
 } from "./MainStyles";
@@ -27,10 +30,8 @@ import Icon from "../Icon/Icon";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
 
-import flashImage from "../../assets/flash.jpg";
-import hobbitImage from "../../assets/hobbit.jpg";
 import SearchIcon from "../../assets/ic_round-search.svg";
-import { images, moviesComingSoon } from "../../constants/constants";
+import { images, movies, moviesComingSoon } from "../../constants/constants";
 
 function Main() {
   const [width, setWidth] = useState<number>(0);
@@ -50,6 +51,8 @@ function Main() {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 5000,
+    prevArrow: <></>, // Define como um componente vazio para desativar o controle anterior
+    nextArrow: <></>,
   };
 
   const icon: IconProps = {
@@ -100,6 +103,7 @@ function Main() {
             ))}
           </BtnsContainer>
         </CategoryContainer>
+
         <PostersContainer>
           <PostersContainerTitle>
             <p>Em cartaz</p>
@@ -138,12 +142,15 @@ function Main() {
 
         <FlexContainer>
           <Slider {...settings}>
-            <SliderContainer>
-              <SliderImg src={hobbitImage} alt="Imagem 1" />
-            </SliderContainer>
-            <SliderContainer>
-              <SliderImg src={flashImage} alt="Imagem 2" />
-            </SliderContainer>
+            {movies.map((movie) => (
+              <SliderContainer key={movie.altText}>
+                <SliderImg src={movie.imageSrc} alt={movie.altText} />
+                <InnerSliderContainer>
+                  <Information>{movie.status}</Information>
+                  <SliderBtn role="botão">{movie.buttonText}</SliderBtn>
+                </InnerSliderContainer>
+              </SliderContainer>
+            ))}
           </Slider>
         </FlexContainer>
       </Container>

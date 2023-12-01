@@ -36,6 +36,7 @@ import useRedirect from "../../utils/customHook/useRedirect/useRedirect";
 
 function RoomPage() {
   const { redirectTo } = useRedirect();
+  const [isSelected, setIsSelected] = useState<string>("");
   const [width, setWidth] = useState<number>(0);
   const carousel = useRef<HTMLDivElement>(null);
 
@@ -53,8 +54,9 @@ function RoomPage() {
           onClick={() => {
             redirectTo("/home");
           }}
+          loading="lazy"
         />
-        <MovieImage src={Avatar} alt="imagem do filme" />
+        <MovieImage src={Avatar} alt="imagem do filme" loading="lazy" />
       </RoomImageContainer>
 
       <MovieTitleContainer>
@@ -90,7 +92,7 @@ function RoomPage() {
                     key={item.id}
                     $hasMargin={item.gap ? item.gap : ""}
                   >
-                    <img src={icon} alt="" />
+                    <img src={icon} alt="icone de cadeiras" />
                   </SeatsItems>
                 ))}
               </GroupInner>
@@ -106,9 +108,13 @@ function RoomPage() {
             dragConstraints={{ right: 0, left: -width }}
           >
             {dateList.map((date) => (
-              <CarouselItemContainer key={date.date}>
-                <Item>{date.day}</Item>
-                <Item>{date.date}</Item>
+              <CarouselItemContainer
+                key={date.id}
+                $primary={date.id === isSelected}
+                onClick={() => setIsSelected(date.id)}
+              >
+                <Item $primary={date.id === isSelected}>{date.day}</Item>
+                <Item $primary={date.id === isSelected}>{date.date}</Item>
               </CarouselItemContainer>
             ))}
           </DateCarouselInner>

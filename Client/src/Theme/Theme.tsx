@@ -2,6 +2,7 @@ export const theme = {
   colors: {
     primary: "#3CC2EA",
     light: "#fff",
+    tertiary: "#FFFF00",
     text: "rgba(255, 255, 255, 0.82)",
     secundary_text: "#fff",
     primary_btn: "#3CC2EA",
@@ -21,12 +22,12 @@ export const theme = {
   },
   headingColor: "hsl(var(--hue-1), 61%, 24%)",
   breakPoints: {
-    smallerPhone: "59.9em",
-    phoneOnly: "60em",
-    tabletPortraitUp: "78.6em",
-    tabletLandscapeUp: "90em",
-    desktopUp: "120em",
-    bigDesktopUp: "180em",
+    smallerPhone: "25em",
+    phoneOnly: "37.5em",
+    tabletPortraitUp: "48em",
+    tabletLandscapeUp: "56.25em",
+    desktopUp: "75em",
+    bigDesktopUp: "87.5em",
   },
   fontSize: {
     sPhone: [1.2, 2, 3],

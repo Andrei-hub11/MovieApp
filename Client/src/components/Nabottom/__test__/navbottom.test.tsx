@@ -2,6 +2,7 @@ import { MemoryRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { render, fireEvent } from "@testing-library/react";
 import { Mock, vi } from "vitest";
+import "@testing-library/jest-dom";
 
 import { theme } from "../../../Theme/Theme";
 import { navicons } from "../../../constants/constants";
@@ -16,27 +17,29 @@ vi.mock("../../../utils/customHook/useRedirect/useRedirect", () => ({
 
 const mockRedirectTo = vi.fn(); // Função mock redirectTo
 
-test("redirects to the correct route when clicking navigation icons", () => {
-  (useRedirect as Mock).mockReturnValue({
-    redirectTo: mockRedirectTo,
-  });
+describe("NavBottom Component", () => {
+  test("redirects to the correct route when clicking navigation icons", () => {
+    (useRedirect as Mock).mockReturnValue({
+      redirectTo: mockRedirectTo,
+    });
 
-  const { getAllByAltText } = render(
-    <ThemeProvider theme={theme}>
-      <MemoryRouter initialEntries={["/"]} initialIndex={0}>
-        <Navbottom />
-      </MemoryRouter>
-    </ThemeProvider>
-  );
+    const { getAllByAltText } = render(
+      <ThemeProvider theme={theme}>
+        <MemoryRouter initialEntries={["/"]} initialIndex={0}>
+          <Navbottom />
+        </MemoryRouter>
+      </ThemeProvider>
+    );
 
-  // Simule um clique em cada ícone
-  const navigationIcons = getAllByAltText(
-    "icone de navegação"
-  ) as HTMLImageElement[];
+    // Simule um clique em cada ícone
+    const navigationIcons = getAllByAltText(
+      "icone de navegação"
+    ) as HTMLImageElement[];
 
-  navigationIcons.forEach((icon, index) => {
-    fireEvent.click(icon); // Simula um clique em cada ícone
-    // Espera-se que a função seja chamada com a rota correta
-    expect(mockRedirectTo).toHaveBeenCalledWith(navicons[index].route);
+    navigationIcons.forEach((icon, index) => {
+      fireEvent.click(icon); // Simula um clique em cada ícone
+      // Espera-se que a função seja chamada com a rota correta
+      expect(mockRedirectTo).toHaveBeenCalledWith(navicons[index].route);
+    });
   });
 });

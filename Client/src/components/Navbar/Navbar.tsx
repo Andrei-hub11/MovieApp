@@ -1,4 +1,4 @@
-import { InputsProps, BtnList, IconProps } from "../../types";
+import { InputsProps, BtnList, IconProps, IndicatorProps } from "../../types";
 
 import {
   BtnContainer,
@@ -15,8 +15,14 @@ import Input from "../Input/Input";
 
 import Anakin from "../../assets/profile-image.jpg";
 import SearchIcon from "../../assets/ic_round-search.svg";
+import Indicator from "../SectionIndicator/Indicator";
 
-function Navbar() {
+interface navProps {
+  isUnique?: boolean;
+  indicatorProps: IndicatorProps;
+}
+
+function Navbar({ isUnique, indicatorProps }: navProps) {
   const btnlist: BtnList[] = [
     {
       btn: { $primary: true, onClick: undefined },
@@ -45,24 +51,25 @@ function Navbar() {
   };
 
   return (
-    <Header>
-      <ProfileImageContainer>
+    <Header $isUnique={isUnique}>
+      <ProfileImageContainer $isUnique={isUnique}>
         <NavbarProfileImage src={Anakin} alt="profile-image" />
       </ProfileImageContainer>
       <Navegation>
-        <BtnContainer>
+        <BtnContainer $isUnique={isUnique}>
           {btnlist.map((btn) => (
             <Button key={btn.btn_text} btn={btn.btn}>
               {btn.btn_text}
             </Button>
           ))}
         </BtnContainer>
-        <InputContainer>
+        <InputContainer $isUnique={isUnique}>
           <Input input={inputProps}></Input>
           <IconContainer $primary>
             <Icon icon={icon} />
           </IconContainer>
         </InputContainer>
+        {isUnique ? <Indicator indicator={indicatorProps} /> : null}
       </Navegation>
     </Header>
   );
