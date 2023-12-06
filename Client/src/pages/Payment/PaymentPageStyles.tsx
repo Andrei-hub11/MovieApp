@@ -24,12 +24,12 @@ export const InformationContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: ${({ theme: { colors } }) => colors.secondary_bg};
   }
 
   @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
     background: ${({ theme: { colors } }) => colors.secondary_bg};
     width: 52rem;
+    height: 62rem;
     margin: 0 auto;
     border-radius: 0.5rem;
   }

@@ -30,6 +30,7 @@ import SearchIcon from "../../assets/ic_round-search.svg";
 import arrowIcon from "../../assets/solar_arrow-left-linear.svg";
 
 interface userProps {
+  // para garantir que o indicator não vai ser renderizado desnecessariamente
   isUnique: boolean;
 }
 function UserManager({ isUnique }: userProps) {

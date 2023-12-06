@@ -8,7 +8,7 @@ describe("ProfilePage Component", () => {
   test("renders profile information correctly", () => {
     const { getByText, getByAltText } = render(
       <ThemeProvider theme={theme}>
-        <Profile />
+        <Profile isUnique />
       </ThemeProvider>
     );
 

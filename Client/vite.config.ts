@@ -11,4 +11,14 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://localhost:7238",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, "/api/v1"), // Se necessário
+      },
+    },
+  },
 });
+

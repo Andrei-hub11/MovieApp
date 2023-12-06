@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 
 import useRedirect from "../../utils/customHook/useRedirect/useRedirect";
+import { useTypedSelector } from "../../app/store";
 
 import {
   Aside,
@@ -15,6 +16,7 @@ import Icon from "../Icon/Icon";
 import { navicons } from "../../constants/constants";
 
 function Sidebar() {
+  const account = useTypedSelector((state) => state.account);
   const { redirectTo } = useRedirect();
   const location = useLocation();
 
@@ -26,23 +28,36 @@ function Sidebar() {
         <ProfileImage src={Anakin} />
       </ProfileImageContainer>
       <SideList>
-        {navicons.map((link) => (
-          <SideLInk
-            key={link.route}
-            $primary={link.route === currentPath}
-            onClick={() => {
-              redirectTo(link.route);
-            }}
-          >
-            <Icon
-              icon={{
-                src: link.default,
-                alt: "icone de navegação",
+        {navicons.map((link) => {
+          if (
+            link.route === "/controle-de-usuarios" &&
+            account.Roles[0] !== "Admin"
+          ) {
+            return;
+          }
+
+          if (link.route === "/ingressos" && account.Roles[0] === "Admin") {
+            return;
+          }
+
+          return (
+            <SideLInk
+              key={link.route}
+              $primary={link.route === currentPath}
+              onClick={() => {
+                redirectTo(link.route);
               }}
-            />
-            {link.name}
-          </SideLInk>
-        ))}
+            >
+              <Icon
+                icon={{
+                  src: link.default,
+                  alt: "icone de navegação",
+                }}
+              />
+              {link.name}
+            </SideLInk>
+          );
+        })}
       </SideList>
     </Aside>
   );

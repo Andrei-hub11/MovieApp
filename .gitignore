@@ -1,5 +1,6 @@
 .vs/
+.github/
+.vscode/
 *.sln
-/Backend
-/CinemaAppUnitTest
-/Client/src/pages/Home
+
+

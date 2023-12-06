@@ -1,9 +1,17 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
+import { AppearanceProps } from "../../types";
 
 export const CentralSection = styled.main`
   grid-area: main;
+
   overflow-y: auto;
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    display: flex;
+    flex-direction: column;
+    gap: 12rem;
+  }
 `;
 
 export const Container = styled.div`
@@ -215,11 +223,12 @@ export const InnerSliderContainer = styled.div`
   bottom: 5rem;
 `;
 
-export const Information = styled.h1`
+export const Information = styled.h1<AppearanceProps>`
   font-family: ${({ theme: { fonts } }) => fonts[0]};
   font-size: 2.2rem;
   font-weight: bold;
-  color: ${({ theme: { colors } }) => colors.text};
+  color: ${({ theme: { colors }, $primary }) =>
+    $primary ? colors.bg : colors.text};
 `;
 
 export const SliderBtn = styled.a`
@@ -243,5 +252,29 @@ export const SliderImg = styled.img`
 `;
 
 export const MoveListContainer = styled.div`
-  display: flex;
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+    display: none;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    display: flex;
+    justify-content: center;
+    gap: 3.6rem;
+    width: 100%;
+  }
+`;
+
+export const MovieContainer = styled.div`
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    width: 15rem;
+    height: 19rem;
+  }
+`;
+
+export const MovieImage = styled.img`
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
 `;

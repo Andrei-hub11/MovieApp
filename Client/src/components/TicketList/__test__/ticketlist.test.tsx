@@ -40,6 +40,7 @@ describe("TicketsPage Component", () => {
         eventDate: new Date(2023, 11, 25),
         amountPaid: 60,
         purcheadSeats: ["A-1", "A-2", "A-3", "A-5", "A-6"],
+        roomNumber: "3",
         isUsed: false,
       },
       {
@@ -51,13 +52,14 @@ describe("TicketsPage Component", () => {
         eventDate: new Date(2023, 11, 25),
         amountPaid: 60,
         purcheadSeats: ["A-1", "A-2", "A-3"],
+        roomNumber: "3",
         isUsed: true,
       },
     ];
 
     const { getAllByRole } = render(
       <ThemeProvider theme={theme}>
-        <TicketPanel tickets={mockTicktsProps} />
+        <TicketPanel tickets={mockTicktsProps} showCheckbox={false} />
       </ThemeProvider>
     );
 

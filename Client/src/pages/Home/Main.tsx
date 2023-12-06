@@ -16,6 +16,9 @@ import {
   FlexContainer,
   Information,
   InnerSliderContainer,
+  MoveListContainer,
+  MovieContainer,
+  MovieImage,
   NavInputContainer,
   PostersCarousel,
   PostersCarouselInner,
@@ -25,10 +28,10 @@ import {
   SliderContainer,
   SliderImg,
 } from "./MainStyles";
-import { IconContainer } from "../Navbar/NavbarStyles";
-import Icon from "../Icon/Icon";
-import Input from "../Input/Input";
-import Button from "../Button/Button";
+import { IconContainer } from "../../components/Navbar/NavbarStyles";
+import Icon from "../../components/Icon/Icon";
+import Input from "../../components/Input/Input";
+import Button from "../../components/Button/Button";
 
 import SearchIcon from "../../assets/ic_round-search.svg";
 import { images, movies, moviesComingSoon } from "../../constants/constants";
@@ -146,7 +149,9 @@ function Main() {
               <SliderContainer key={movie.altText}>
                 <SliderImg src={movie.imageSrc} alt={movie.altText} />
                 <InnerSliderContainer>
-                  <Information>{movie.status}</Information>
+                  <Information $primary={movie.$primary}>
+                    {movie.status}
+                  </Information>
                   <SliderBtn role="botão">{movie.buttonText}</SliderBtn>
                 </InnerSliderContainer>
               </SliderContainer>
@@ -154,6 +159,13 @@ function Main() {
           </Slider>
         </FlexContainer>
       </Container>
+      <MoveListContainer>
+        {images.map((movie) => (
+          <MovieContainer key={movie}>
+            <MovieImage src={movie} />
+          </MovieContainer>
+        ))}
+      </MoveListContainer>
     </CentralSection>
   );
 }

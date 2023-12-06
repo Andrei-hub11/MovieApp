@@ -15,7 +15,7 @@ function App() {
       <>
         <Router>
           <Routes>
-            <Route path="/" element={<Navigate to="/home" />} />
+            <Route path="/" element={<Navigate to="/login" />} />
             {routes.map((route) => (
               <Route
                 key={route.path}

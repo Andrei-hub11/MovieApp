@@ -10,6 +10,7 @@ import Indicator from "../../components/SectionIndicator/Indicator";
 import TicketPanel from "../../components/TicketList/TicketList";
 
 interface ticketsProps {
+  // para garantir que o indicator não vai ser renderizado desnecessariamente
   isUnique: boolean;
 }
 

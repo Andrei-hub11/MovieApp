@@ -15,6 +15,10 @@ export const ArrowIcon = styled.img`
     left: 1rem;
     cursor: pointer;
   }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    display: none;
+  }
 `;
 
 export const NavContainer = styled(motion.div)<AppearanceProps>`

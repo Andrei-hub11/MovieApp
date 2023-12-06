@@ -78,7 +78,7 @@ describe("TicketsPage Component", () => {
   it("renders tickets correctly", () => {
     const { container } = render(
       <ThemeProvider theme={theme}>
-        <TicketsPage />
+        <TicketsPage isUnique />
       </ThemeProvider>
     );
 
@@ -100,7 +100,7 @@ describe("TicketsPage Component", () => {
   it("displays correct ticket information", () => {
     const { getAllByText, getByText } = render(
       <ThemeProvider theme={theme}>
-        <TicketsPage />
+        <TicketsPage isUnique />
       </ThemeProvider>
     );
 

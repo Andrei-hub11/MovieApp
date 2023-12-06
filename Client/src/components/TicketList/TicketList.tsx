@@ -51,7 +51,13 @@ function TicketPanel({
       }}
     >
       {tickets.map((ticket) => (
-        <ItemContainer key={ticket.id} $isUsed={ticket.isUsed} role="ingresso">
+        <ItemContainer
+          key={ticket.id}
+          id={ticket.id}
+          $isUsed={ticket.isUsed}
+          $isUnique={ticket.purcheadSeats.length >= 4}
+          role="ingresso"
+        >
           <TicketInformationContainer>
             <MovieTitle>{ticket.title}</MovieTitle>
             <MovieSubtitle>{ticket.subtitle}</MovieSubtitle>
@@ -83,6 +89,14 @@ function TicketPanel({
               <InformationTitle>Assentos</InformationTitle>
               <MovieSubtitle $isUnique={true}>
                 {ticket.purcheadSeats.join(", ")}
+              </MovieSubtitle>
+            </TicketInformationContainer>
+          </ItemInnerContainer>
+          <ItemInnerContainer>
+            <TicketInformationContainer>
+              <InformationTitle>Sala</InformationTitle>
+              <MovieSubtitle $isUnique={true}>
+                {ticket.roomNumber}
               </MovieSubtitle>
             </TicketInformationContainer>
           </ItemInnerContainer>

@@ -1,4 +1,4 @@
-import { DateList, IconsList, Movie, TicketList } from "../types";
+import { DateList, IconsList, MovieSlider, TicketList } from "../types";
 
 import image1 from "../assets/1.jpg";
 import image2 from "../assets/2.jpg";
@@ -12,13 +12,15 @@ import image9 from "../assets/9.jpg";
 import image10 from "../assets/10.jpg";
 
 import HomeIcon from "../assets/mdi_home-outline.svg";
+import HomeSelected from "../assets/mdi_home-outline-selected.svg";
 import NotificationIcon from "../assets/mingcute_notification-line.svg";
+import NotificationSelected from "../assets/mingcute_notification-line-selcted.svg";
 import HistoricIcon from "../assets/tabler_book.svg";
 import HistoricSelected from "../assets/tabler_book-selected.svg";
 import ProfileIcon from "../assets/iconamoon_profile-bold.svg";
-import HomeSelected from "../assets/mdi_home-outline-selected.svg";
-import NotificationSelected from "../assets/mingcute_notification-line-selcted.svg";
 import ProfileSelected from "../assets/iconamoon_profile-bold-selected.svg";
+import UsersIcon from "../assets/users.svg";
+import UsersSelected from "../assets/users-selected.svg";
 
 import interestelarImage from "../assets/interestelar.jpg";
 import avatarImage from "../assets/avatar-t.jpg";
@@ -52,14 +54,21 @@ export const navicons: IconsList[] = [
     default: ProfileIcon,
     selected: ProfileSelected,
   },
+  {
+    name: "Controle de usuarios",
+    route: "/controle-de-usuarios",
+    default: UsersIcon,
+    selected: UsersSelected,
+  },
 ];
 
-export const movies: Movie[] = [
+export const movies: MovieSlider[] = [
   {
     imageSrc: avatarImage,
     altText: "Imagem 1",
     status: "Em cartaz",
     buttonText: "Avatar: O Caminho da Água",
+    $primary: true,
   },
   {
     imageSrc: interestelarImage,
@@ -81,7 +90,8 @@ export const Tickets: TicketList[] = [
     eventTime: eventTime,
     eventDate: new Date(2023, 11, 25),
     amountPaid: 60,
-    purcheadSeats: ["A-1", "A-2", "A-3", "A-5", "A-6"],
+    roomNumber: "5",
+    purcheadSeats: ["A-1", "A-2", "A-3", "A-4", "A-5", "A-6"],
     isUsed: false,
   },
   {
@@ -92,6 +102,7 @@ export const Tickets: TicketList[] = [
     eventTime: eventTime,
     eventDate: new Date(2023, 11, 25),
     amountPaid: 60,
+    roomNumber: "1",
     purcheadSeats: ["A-1", "A-2", "A-3"],
     isUsed: false,
   },
@@ -103,6 +114,7 @@ export const Tickets: TicketList[] = [
     eventTime: eventTime,
     eventDate: new Date(2023, 11, 25),
     amountPaid: 60,
+    roomNumber: "2",
     purcheadSeats: ["A-1", "A-2", "A-3"],
     isUsed: false,
   },
@@ -114,6 +126,7 @@ export const Tickets: TicketList[] = [
     eventTime: eventTime,
     eventDate: new Date(2023, 11, 25),
     amountPaid: 60,
+    roomNumber: "3",
     purcheadSeats: ["A-1", "A-2", "A-3"],
     isUsed: true,
   },

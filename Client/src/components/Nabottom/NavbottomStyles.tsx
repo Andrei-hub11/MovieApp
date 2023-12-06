@@ -30,6 +30,7 @@ export const NavBottomIconContainer = styled.div<AppearanceNavBottomProps>`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 3rem;
     height: 3rem;
     border-radius: 50%;

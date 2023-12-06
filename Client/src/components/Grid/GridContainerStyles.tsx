@@ -17,7 +17,7 @@ export const MainContainer = styled.div<GridContainerProps>`
 
   @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
     grid-template-columns: 240px 1fr;
-    grid-template-rows: 55px 1fr 50px;
+    grid-template-rows: 55px 1fr 1fr;
     grid-template-areas:
       "sidebar headernav"
       "sidebar main"

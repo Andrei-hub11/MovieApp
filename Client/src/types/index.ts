@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import * as yup from "yup";
 
 export interface SliderSettings {
   dots: boolean;
@@ -26,11 +27,37 @@ export interface ButtonProps {
   $isUnique?: boolean;
 }
 
-interface Movie {
+export interface MovieSlider {
   imageSrc: string;
   altText: string;
   status: string;
   buttonText: string;
+  $primary?: boolean;
+}
+
+export interface Field {
+  name: string;
+  label: string;
+  validation: yup.StringSchema<string>;
+  type?: string;
+  iconSrc?: string;
+}
+
+export interface FormProps {
+  title: string;
+  fields: Field[];
+  renderKey: string;
+  btnText: string;
+  handleRegisterAction?: (values: RegisterFormData) => void;
+  handleLoginAction?: (values: LoginFormData) => void;
+}
+
+export interface Actions {
+  [key: string]: () => React.ReactNode;
+}
+
+export interface AvailableRoutes {
+  [key: string]: (route: string) => boolean;
 }
 
 export interface IndicatorProps {
@@ -69,6 +96,7 @@ export interface TicketList {
   subtitle?: string;
   eventTime: Date;
   eventDate: Date;
+  roomNumber: string;
   amountPaid: number;
   purcheadSeats: string[];
   isUsed: boolean;
@@ -80,6 +108,45 @@ export interface AppearanceProps {
   $isSelected?: boolean;
   $isUnique?: boolean;
   $isUsed?: boolean;
+  disabled?: boolean;
+}
+
+export interface User {
+  Id: string;
+  UserName: string;
+  Email: string;
+  ProfileImagePath: string | null;
+  Tickets: [];
+}
+
+export interface RegisterFormData {
+  name: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+}
+
+export interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+export interface UserLogin {
+  Email: string;
+  Password: string;
+}
+
+export interface LoginResponse {
+  Token: string;
+  User: User;
+  Role: "Admin" | "User";
+}
+
+export interface UserRegister {
+  UserName: string;
+  Email: string;
+  Password: string;
+  Role: "Admin" | "User";
 }
 
 export interface GridContainerProps {

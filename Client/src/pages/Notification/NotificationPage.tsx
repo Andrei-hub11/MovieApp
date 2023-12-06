@@ -15,6 +15,7 @@ import { IndicatorProps } from "../../types";
 import indicatorIcon from "../../assets/octicon_arrow-right-24.svg";
 
 interface notificationProps {
+  // para garantir que o indicator não vai ser renderizado desnecessariamente
   isUnique: boolean;
 }
 

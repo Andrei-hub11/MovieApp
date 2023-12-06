@@ -29,26 +29,23 @@ export const InnerContainerTickets = styled(motion.div)`
 `;
 
 export const ItemContainer = styled(motion.div)<AppearanceProps>`
+  border: ${({ $isUsed, theme: { colors } }) =>
+    $isUsed ? "solid .1rem #FF3030" : `solid .1rem ${colors.primary}`};
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     position: relative;
     display: flex;
     flex-direction: column;
     padding: 1.2rem 1.8rem;
     width: 28rem;
-    min-height: 35rem;
+    min-height: ${({ $isUnique }) => ($isUnique ? "35rem" : "33rem")};
     border-radius: 0.5rem;
     background: ${({ theme: { colors } }) => colors.secondary_bg};
-    border: ${({ $isUsed, theme: { colors } }) =>
-      $isUsed ? "solid .1rem #FF3030" : `solid .1rem ${colors.primary}`};
     gap: 1.7rem;
   }
 
   @media (min-width: ${(props) => props.theme.breakPoints.tabletPortraitUp}) {
+    min-height: ${({ $isUnique }) => ($isUnique ? "38rem" : "36rem")};
     width: 30.6rem;
-  }
-
-  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
-    cursor: grab;
   }
 `;
 
