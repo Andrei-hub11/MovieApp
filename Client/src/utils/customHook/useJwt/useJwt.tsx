@@ -4,8 +4,13 @@ const manageJWTCookieState = () => {
   const token = Cookies.get("accessToken") || null;
 
   const saveToken = (newToken: string) => {
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 14);
     // Salvar o token nos cookies
-    Cookies.set("accessToken", newToken, { path: "/" });
+    Cookies.set("accessToken", newToken, {
+      expires: expirationDate,
+      path: "/",
+    });
   };
 
   const removeToken = () => {

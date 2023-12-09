@@ -4,6 +4,8 @@ using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Backend.DTOs;
+using ErrorOr;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Backend.Services;
 
@@ -26,10 +28,22 @@ public class AccountService : IAccount
         return usersDTO;
     }
 
-    public async Task<UserDTO> GetUserByIdAsync(string userId)
+    public async Task<ErrorOr<UserDTO>> GetUserByIdAsync(string userId)
     {
+        List<Error> errors = new();
         var user = await _userManager.Users.FirstOrDefaultAsync((user) => user.Id == userId);
-        var userDTO =  _mapper.Map<ApplicationUser, UserDTO>(user);
+
+        if (user == null)
+        {
+            errors.Add(
+            Error.Validation(
+                description: $"O usuário com o id {userId} não foi encontrado"
+            )
+        );
+            return errors;
+        }
+
+        var userDTO = _mapper.Map<ApplicationUser, UserDTO>(user);
         return userDTO;
     }
 
@@ -80,12 +94,24 @@ public class AccountService : IAccount
         return await _userManager.GetRolesAsync(user);
     }
 
-    public async Task<bool> UploadProfileImageAsync(IFormFile image, string id)
+    public async Task<ErrorOr<UserDTO>> UploadProfileImageAsync(IFormFile image, string userId)
     {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
+        List<Error> errors = new();
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            errors.Add(
+            Error.Validation(
+                description: $"O usuário com o id {userId} não foi encontrado"
+            )
+        );
+            return errors;
+        }
+
         using (var stream = new MemoryStream())
         {
-            
+
             await image.CopyToAsync(stream);
             var fileName = Guid.NewGuid().ToString() + ".jpg";
             // Salve a imagem no servidor (por exemplo, na pasta wwwroot/images)
@@ -93,7 +119,46 @@ public class AccountService : IAccount
             File.WriteAllBytes(filePath, stream.ToArray());
             user.ProfileImagePath = "/images/" + fileName;
             await _userManager.UpdateAsync(user);
-            return true;
+            var userDTO = _mapper.Map<ApplicationUser, UserDTO>(user);
+            return userDTO;
         }
     }
+
+    public async Task<ErrorOr<UserDTO>> UpdateUserAsync(UserUpdateModel userData, string userId) { 
+        List<Error> errors = new();
+
+        var user = await _userManager.Users.FirstOrDefaultAsync((user) => user.Id == userId);
+
+        if (user == null)
+        {
+            errors.Add(
+            Error.Validation(
+                description: $"O usuário com o id {userId} não foi encontrado"
+            )
+        );
+            return errors;
+        }
+
+        var result = await _userManager.FindByEmailAsync(userData.Email);
+
+        if (string.IsNullOrEmpty(userData.Email) && result != null)
+        {
+            errors.Add(
+           Error.Validation(
+               description: $"O email {userData.Email} já existe para outro usuário."
+           )
+       );
+            return errors;
+        }
+
+        user.UserName = userData.UserName ?? user.UserName;
+        user.Email = userData.Email ?? user.Email;
+
+        await _userManager.UpdateAsync(user);
+
+        var userDTO = _mapper.Map<ApplicationUser, UserDTO>(user);
+        return userDTO;
+    }
+
+   
 }

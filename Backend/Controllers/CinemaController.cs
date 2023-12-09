@@ -2,10 +2,13 @@
 using Backend.DTOs;
 using Backend.Models;
 using Backend.Services;
+using Backend.SignalR.Hubs;
 using Backend.Validators.Cinema;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
 
 namespace Backend.Controllers;
 
@@ -16,10 +19,12 @@ public class CinemaController : ControllerBase
 {
     private readonly CinemaService _cinemaService;
     private readonly IMapper _mapper;
-    public CinemaController(CinemaService cinemaService, IMapper mapper) 
+    private readonly IHubContext<NotificationHub> _hubContext;
+    public CinemaController(CinemaService cinemaService, IMapper mapper, IHubContext<NotificationHub> hubContext) 
     { 
         _cinemaService = cinemaService;
         _mapper = mapper;
+        _hubContext = hubContext;
     }
 
     [Authorize(Policy = "UserOrAdmin")]
@@ -116,6 +121,13 @@ public class CinemaController : ControllerBase
             }
 
             var ticketDTO = _mapper.Map<TicketDTO>(result.Value);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (NotificationHub.TryGetConnectionId(userId, out string connectionId))
+            {
+                await _hubContext.Clients.Client(connectionId).SendAsync("ReceberNotificacao", "Sua compra foi confirmada!");
+            }
 
             return Ok(new { Message = "Ticket criado com sucesso", Ticket = ticketDTO });
         }

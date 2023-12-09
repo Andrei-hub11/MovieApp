@@ -2,6 +2,7 @@ using Backend.Context;
 using Backend.Data;
 using Backend.Models;
 using Backend.Services;
+using Backend.SignalR.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +40,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddTransient<RoleService>();
     builder.Services.AddTransient<SeedData>();
     builder.Services.AddAutoMapper(typeof(Program));
-
+    builder.Services.AddSignalR();
 
 
     builder.Services
@@ -67,6 +68,10 @@ var builder = WebApplication.CreateBuilder(args);
             ValidateIssuer = false,
             ValidateAudience = false
         };
+
+
+
+
     });
 
     builder.Services.Configure<IdentityOptions>(options =>
@@ -126,6 +131,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<NotificationHub>("/notificationHub");
 app.UseStaticFiles();
 
 app.Run();

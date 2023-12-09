@@ -1,7 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User, UserLogin, UserRegister } from "../../types";
+import {
+  UpdateImage,
+  UpdateUser,
+  User,
+  UserLogin,
+  UserRegister,
+} from "../../types";
 
-import accountService from "./serviceAccount";
+import accountService from "./accountService";
 
 interface AccountUserState {
   User: User;
@@ -9,7 +15,7 @@ interface AccountUserState {
   isSuccess: boolean;
   isLoading: boolean;
   message: string;
-  Roles: [string];
+  Role: [string];
 }
 
 const initialState: AccountUserState = {
@@ -20,7 +26,7 @@ const initialState: AccountUserState = {
     ProfileImagePath: "",
     Tickets: [],
   },
-  Roles: [""],
+  Role: [""],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -28,19 +34,19 @@ const initialState: AccountUserState = {
 };
 
 export const login = createAsyncThunk(
-  "auth/login",
-  async (user: UserLogin, thunkAPI) => {
+  "account/login",
+  async (user: UserLogin) => {
     try {
       return await accountService.login(user);
     } catch (error) {
       const message = (error as Error).message;
-      return thunkAPI.rejectWithValue(message);
+      throw new Error(message);
     }
   }
 );
 
 export const register = createAsyncThunk(
-  "auth/register",
+  "account/register",
   async (user: UserRegister, thunkAPI) => {
     try {
       return await accountService.register(user);
@@ -51,17 +57,42 @@ export const register = createAsyncThunk(
   }
 );
 
-export const getMe = createAsyncThunk(
-  "auth/me",
-  async (token: string, thunkAPI) => {
+export const updateProfileUser = createAsyncThunk(
+  "account/update-user",
+  async (userData: UpdateUser) => {
     try {
-      return await accountService.getMe(token);
+      return await accountService.updateProfileUser(userData);
     } catch (error) {
       const message = (error as Error).message;
-      return thunkAPI.rejectWithValue(message);
+      throw new Error(message);
     }
   }
 );
+
+export const uploadProfileImage = createAsyncThunk(
+  "account/upload-image",
+  async (imageData: UpdateImage) => {
+    try {
+      return await accountService.uploadProfileImage(
+        imageData.image,
+        imageData.Id
+      );
+    } catch (error) {
+      const message = (error as Error).message;
+      throw new Error(message);
+    }
+  }
+);
+
+export const getMe = createAsyncThunk("account/me", async (token: string) => {
+  try {
+    return await accountService.getMe(token);
+  } catch (error) {
+    const message = (error as Error).message;
+
+    throw new Error(message);
+  }
+});
 
 export const logout = createAsyncThunk("auth/logout", async () => {
   return accountService.logout();
@@ -89,7 +120,7 @@ const accountSlice = createSlice({
           state.isLoading = false;
           state.isSuccess = true;
           state.User = action.payload.User;
-          state.Roles = action.payload.Roles;
+          state.Role = action.payload.Role;
         }
       )
       .addCase(register.rejected, (state, action) => {
@@ -106,10 +137,43 @@ const accountSlice = createSlice({
           state.isLoading = false;
           state.isSuccess = true;
           state.User = action.payload.User;
-          state.Roles = action.payload.Roles;
+          state.Role = action.payload.Role;
         }
       )
       .addCase(login.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.error?.message || "Unknown error";
+      })
+      .addCase(updateProfileUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(
+        updateProfileUser.fulfilled,
+        (state, action: PayloadAction<AccountUserState>) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.User = {
+            ...state.User,
+            UserName: action.payload.User.UserName,
+            Email: action.payload.User.Email,
+          };
+        }
+      )
+      .addCase(updateProfileUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.error?.message || "Unknown error";
+      })
+      .addCase(uploadProfileImage.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(uploadProfileImage.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.User.ProfileImagePath = action.payload.ProfileImage;
+      })
+      .addCase(uploadProfileImage.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.error?.message || "Unknown error";
@@ -128,16 +192,14 @@ const accountSlice = createSlice({
           ProfileImagePath: "",
           Tickets: [],
         };
-        state.Roles = [""];
+        state.Role = [""];
       })
       .addCase(
         getMe.fulfilled,
         (state, action: PayloadAction<AccountUserState>) => {
           state.isLoading = false;
-          state.isSuccess = true;
           state.User = action.payload.User;
-
-          state.Roles = action.payload.Roles;
+          state.Role = action.payload.Role;
         }
       )
       .addCase(logout.fulfilled, (state) => {
@@ -148,7 +210,7 @@ const accountSlice = createSlice({
           ProfileImagePath: "",
           Tickets: [],
         };
-        state.Roles = [""];
+        state.Role = [""];
         state.isSuccess = false;
       });
   },

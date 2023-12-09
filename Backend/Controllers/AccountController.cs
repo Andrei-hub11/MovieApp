@@ -54,10 +54,10 @@ public class AccountController : ControllerBase
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Obtém o ID do usuário do token JWT
             var result = await _accountService.GetUserByIdAsync(userId);
-            var identityUser = await _accountService.FindByEmailAsync(result.Email);
+            var identityUser = await _accountService.FindByEmailAsync(result.Value.Email);
             var roles = await _accountService.GetRolesAsync(identityUser);
 
-            return Ok(new { User = result, Roles = roles});
+            return Ok(new { User = result.Value, Role = roles });
         }
         catch (Exception ex)
         {
@@ -97,16 +97,18 @@ public class AccountController : ControllerBase
         {
             var identityUser = await _accountService.FindByEmailAsync(user.Email);
 
-            if (identityUser != null && await _accountService.CheckPasswordAsync(identityUser, user.Password))
+            if (identityUser == null || !await _accountService.CheckPasswordAsync(identityUser, user.Password))
             {
+              return  BadRequest(new { Message = "Credenciais inválidas." });
+            }
+
+          
                 var roles = await _accountService.GetRolesAsync(identityUser);
                 var token = _tokenService.GenerateJwtToken(identityUser, roles);
 
                 var userDTO = _mapper.Map<ApplicationUser, UserDTO>(identityUser);
                 return Ok(new { Token = token, User = userDTO, Role = roles });
-            }
-
-            return Unauthorized(new { Message = "Credenciais inválidas." });
+           
         }
         catch (Exception ex)
         {
@@ -118,15 +120,16 @@ public class AccountController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] UserRegisterModel user)
     {
+        var validator = new UserRegisterValidator();
+        var validationResult = validator.Validate(user);
+        if (!validationResult.IsValid)
+        {
+            var erros = validationResult.Errors.Select(erro => erro.ErrorMessage).ToList();
+            return BadRequest(new { Message = "Os campos não foram corretamente preenchidos", Errors = erros });
+        }
+
         try
         {
-            var validator = new UserRegisterValidator();
-            var validationResult = validator.Validate(user);
-            if (!validationResult.IsValid)
-            {
-                var erros = validationResult.Errors.Select(erro => erro.ErrorMessage).ToList();
-                return BadRequest(new { Message = "Os campos não foram corretamente preenchidos", Errors = erros });
-            }
 
             var newIdentityUser = new ApplicationUser { UserName = user.UserName, Email = user.Email };
             var result = await _accountService.CreateAsync(newIdentityUser, user.Password);
@@ -172,7 +175,14 @@ public class AccountController : ControllerBase
         try
         {
             var result = await _accountService.UploadProfileImageAsync(image, id);
-            return Ok(result);
+
+            if (result.IsError)
+            {
+                var errorMessages = result.Errors.Select(error => error.Description).ToList();
+                return BadRequest(new { Message = "Algo deu errado no upload da imagem", Errors = errorMessages });
+            }
+
+            return Ok(new { ProfileImage = result.Value.ProfileImagePath });
         }
         catch (Exception ex)
         {
@@ -183,4 +193,39 @@ public class AccountController : ControllerBase
             });
         }
     }
-}
+
+    [Authorize(Policy = "UserOrAdmin")]
+    [HttpPost("update-user")]
+    public async Task<IActionResult> UpdateUser([FromBody] UserUpdateModel userData)
+    {
+        var validator = new UserUpdateValidator();
+        var validationResult = validator.Validate(userData);
+        if (!validationResult.IsValid)
+        {
+            var erros = validationResult.Errors.Select(erro => erro.ErrorMessage).ToList();
+            return BadRequest(new { Message = "Os campos não foram corretamente preenchidos", Errors = erros });
+        }
+
+        try
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _accountService.UpdateUserAsync(userData, userId);
+
+            if (result.IsError)
+            {
+                var errorMessages = result.Errors.Select(error => error.Description).ToList();
+                return BadRequest(new { Message = "Algo deu errado", Errors = errorMessages });
+            }
+
+            return Ok(new {  User = result.Value });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                Message = "Ocorreu um erro durante a atualização do usuário.",
+                Error = ex.Message
+            });
+        }
+    }
+    }

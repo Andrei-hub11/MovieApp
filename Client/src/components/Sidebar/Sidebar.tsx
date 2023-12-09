@@ -11,12 +11,11 @@ import {
   SideList,
 } from "./SidebarStyles";
 
-import Anakin from "../../assets/profile-image.jpg";
 import Icon from "../Icon/Icon";
 import { navicons } from "../../constants/constants";
 
 function Sidebar() {
-  const account = useTypedSelector((state) => state.account);
+  const { User, Role } = useTypedSelector((state) => state.account);
   const { redirectTo } = useRedirect();
   const location = useLocation();
 
@@ -25,18 +24,17 @@ function Sidebar() {
   return (
     <Aside>
       <ProfileImageContainer>
-        <ProfileImage src={Anakin} />
+        <ProfileImage
+          src={import.meta.env.VITE_MOVIE_APP_API_URL + User.ProfileImagePath}
+        />
       </ProfileImageContainer>
       <SideList>
         {navicons.map((link) => {
-          if (
-            link.route === "/controle-de-usuarios" &&
-            account.Roles[0] !== "Admin"
-          ) {
+          if (link.route === "/controle-de-usuarios" && Role[0] !== "Admin") {
             return;
           }
 
-          if (link.route === "/ingressos" && account.Roles[0] === "Admin") {
+          if (link.route === "/ingressos" && Role[0] === "Admin") {
             return;
           }
 

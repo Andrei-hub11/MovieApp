@@ -53,27 +53,17 @@ export const SideLInk = styled.li<AppearanceProps>`
   color: #fff;
   cursor: pointer;
 
-  ${({ $primary, theme: { colors } }) =>
-    $primary
-      ? `
-    &::after {
-        position: absolute;
-      content: '';
-      height: 100%;
-    width: 100%;
-      background: ${colors.primary};
-  border-radius: 0 2rem 2rem 0;
-  z-index: -1;
-    }
-  `
-      : ` &::after {
+  &::after {
     position: absolute;
     content: "";
     height: 100%;
-    width: 0;
+    width: ${({ $primary }) => ($primary ? "100%" : "0")};
+    background-color: ${({ $primary, theme: { colors } }) =>
+      $primary ? colors.primary : ""};
     border-radius: 0 2rem 2rem 0;
     z-index: -1;
-  }`}
+    transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out; /* Transições de largura e cor */
+  }
 
   &:hover::after {
     position: absolute;

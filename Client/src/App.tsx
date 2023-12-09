@@ -1,4 +1,5 @@
 import { ThemeProvider } from "styled-components";
+import { ToastContainer } from "react-toastify";
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,6 +9,8 @@ import {
 
 import { theme } from "./Theme/Theme.tsx";
 import { routes } from "./utils/variables/array_routes.tsx";
+
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -26,6 +29,7 @@ function App() {
           </Routes>
         </Router>
       </>
+      <ToastContainer />
     </ThemeProvider>
   );
 }
