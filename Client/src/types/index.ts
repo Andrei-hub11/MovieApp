@@ -136,6 +136,16 @@ export interface UserLogin {
   Password: string;
 }
 
+export interface UpdateUser {
+  UserName: string;
+  Email: string;
+}
+
+export interface UpdateImage {
+  Id: string;
+  image: FormData;
+}
+
 export interface LoginResponse {
   Token: string;
   User: User;
@@ -147,6 +157,12 @@ export interface UserRegister {
   Email: string;
   Password: string;
   Role: "Admin" | "User";
+}
+
+export interface GiftCard {
+  Id: string;
+  GiftCodigo: string;
+  IsUsed: boolean | undefined;
 }
 
 export interface GridContainerProps {
@@ -172,4 +188,9 @@ export interface IconsList {
   route: string;
   default: string;
   selected: string;
+}
+
+export interface ErrorResponse {
+  Message: string;
+  Error: [] | "";
 }

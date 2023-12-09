@@ -18,6 +18,9 @@ using Microsoft.AspNetCore.Routing;
 using CinemaAppUnitTest.Utils;
 using ErrorOr;
 using CinemaAppUnitTest.Tests2;
+using Backend.SignalR.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Moq;
 
 namespace CinemaAppUnitTest;
 
@@ -37,14 +40,18 @@ public class CinemaControllerTests
         var accountDbContext = new AccountDBContext(accountOptions);
         var userManager = GetTestUserManager(accountOptions);
         var mapper = GetTestMapper();
+        var hubContex = GetTestHubContext();
+
+
 
         var _cinemaService = new CinemaService(dbContext, accountDbContext, userManager);
-        var controller = new CinemaController(_cinemaService, mapper);
+        var controller = new CinemaController(_cinemaService, mapper, hubContex);
         var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
             new Claim(ClaimTypes.Name, "TestUser"),
 
             new Claim(ClaimTypes.Role, "User"),
+             new Claim(ClaimTypes.NameIdentifier, "7ED43069-B436-4DD1-9172-69A6E253B1FD")
         }, "mock"));
 
         controller.ControllerContext = new ControllerContext
@@ -93,6 +100,21 @@ public class CinemaControllerTests
         });
 
         return configuration.CreateMapper();
+    }
+
+    private IHubContext<NotificationHub> GetTestHubContext()
+    {
+        var hubContext = new Mock<IHubContext<NotificationHub>>();
+
+        // Configurar métodos ou comportamentos necessários para o Mock
+        // Por exemplo:
+        hubContext.Setup(h => h.Clients.All.SendCoreAsync(
+           It.IsAny<string>(),  // Argumento obrigatório (o identificador do método)
+           It.IsAny<object[]>(), // Argumento obrigatório (os argumentos do método)
+           default(CancellationToken))) // Argumento opcional
+       .Returns(Task.CompletedTask);
+
+        return hubContext.Object;
     }
 
 
@@ -394,6 +416,7 @@ public class CinemaControllerTests
      UserId: userList[0].Id,
      PurchasedSeats: new List<string> { "A-1"}
             );
+
 
         var ticketResult = await cinemaController.CreateTicket(rooms[0].Id, validTicket);
 

@@ -19,12 +19,12 @@ function Navbottom() {
         {navicons.map((icon) => {
           if (
             icon.route === "/controle-de-usuarios" &&
-            account.Roles[0] !== "Admin"
+            account.Role[0] !== "Admin"
           ) {
             return;
           }
 
-          if (icon.route === "/ingressos" && account.Roles[0] === "Admin") {
+          if (icon.route === "/ingressos" && account.Role[0] === "Admin") {
             return;
           }
 

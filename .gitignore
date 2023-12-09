@@ -2,5 +2,5 @@
 .github/
 .vscode/
 *.sln
-
+Client/src/utils/variables/SuccessOrError.ts
 

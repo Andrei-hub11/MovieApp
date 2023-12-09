@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { getMe } from "./account/sliceAccount";
+import { getMe, reset } from "./account/sliceAccount";
 import { useAppDispatch, useTypedSelector } from "../app/store";
 import manageJWTCookieState from "./customHook/useJwt/useJwt";
 
@@ -22,6 +22,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     dispatch(getMe(token))
       .then(() => {
         setIsLoading(false); // Ação concluída
+        dispatch(reset());
       })
       .catch(() => {
         setIsLoading(false);

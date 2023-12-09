@@ -4,13 +4,23 @@ import { AppearanceProps } from "../../types";
 
 export const CentralSection = styled.main`
   grid-area: main;
-
   overflow-y: auto;
 
   @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
     display: flex;
     flex-direction: column;
     gap: 12rem;
+    &::-webkit-scrollbar-thumb {
+      background: ${({ theme: { colors } }) => colors.secondary_bg};
+      width: 1rem;
+    }
+    &::-webkit-scrollbar-track {
+      background: ${({ theme: { colors } }) => colors.bg};
+    }
+    &::-webkit-scrollbar {
+      width: 1rem;
+      background-color: ${({ theme: { colors } }) => colors.secondary_bg};
+    }
   }
 `;
 

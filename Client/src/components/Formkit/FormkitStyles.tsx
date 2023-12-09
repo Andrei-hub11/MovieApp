@@ -75,9 +75,13 @@ export const FormInput = styled.input`
       font-weight: bold;
     }
 
-    &:-webkit-autofill {
+    &:-webkit-autofill,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:hover {
       -webkit-box-shadow: 0 0 0 5rem
-        ${({ theme: { colors } }) => colors.secondary_bg} inset;
+        ${({ theme: { colors } }) => colors.secondary_bg} inset !important;
+      -webkit-text-fill-color: ${({ theme: { colors } }) =>
+        colors.text} !important;
     }
   }
 `;

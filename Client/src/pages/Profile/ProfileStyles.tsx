@@ -3,6 +3,10 @@ import { AppearanceProps } from "../../types";
 
 export const ProfileContainer = styled.main`
   grid-area: main;
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme: { colors } }) => colors.secondary_bg};
+  }
 `;
 
 export const ProfileInformationContainer = styled.div`
@@ -46,12 +50,19 @@ export const ContainerInner = styled.div`
   }
 `;
 
-export const ProfileImage = styled.img`
+export const ControlIconContainer = styled.div`
+  display: flex;
+  gap: 2rem;
+`;
+
+export const ProfileImage = styled.img<AppearanceProps>`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     object-fit: cover;
     height: 9.4rem;
     width: 9.4rem;
     border-radius: 50%;
+    border: ${({ theme: { colors }, $primary }) =>
+      $primary ? `solid .2rem ${colors.primary}` : ""};
   }
 
   @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
@@ -64,21 +75,48 @@ export const ProfileImage = styled.img`
     height: 12.1rem;
   }
 `;
-/* 
-export const NameContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 3rem;
 
-  p {
-    font-size: 1.4rem;
-    font-family: ${({ theme: { fonts } }) => fonts[1]};
-    font-weight: 500;
-    text-transform: uppercase;
-    color: ${({ theme: { colors } }) => colors.text};
-    letter-spacing: 0.1rem;
+export const InputImageContainer = styled.div`
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+    position: relative;
+    height: 9.4rem;
+    width: 9.4rem;
+    border-radius: 50%;
+    background: ${({ theme: { colors } }) => colors.text};
   }
-`; */
+
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    width: 11.2rem;
+    height: 10.8rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletLandscapeUp}) {
+    width: 12.5rem;
+    height: 12.1rem;
+  }
+`;
+
+export const ImageInput = styled.input`
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: ${({ theme: { colors } }) => colors.text};
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+  }
+`;
+
+export const IconImageInput = styled.img`
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+  }
+`;
 
 export const ProfileText = styled.p`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
@@ -88,6 +126,25 @@ export const ProfileText = styled.p`
     text-transform: uppercase;
     color: ${({ theme: { colors } }) => colors.text};
     letter-spacing: 0.1rem;
+  }
+`;
+
+export const ProfileInput = styled.input<AppearanceProps>`
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+    font-size: 1.4rem;
+    font-family: ${({ theme: { fonts } }) => fonts[1]};
+    font-weight: 500;
+    text-transform: uppercase;
+    color: ${({ theme: { colors } }) => colors.text};
+    letter-spacing: 0.1rem;
+    background: ${({ theme: { colors } }) => colors.secondary_bg};
+    border-bottom: ${({ $isUnique, theme: { colors } }) =>
+      $isUnique
+        ? `solid .1rem ${colors.secondary_bg}`
+        : `solid .1rem ${colors.text}`};
+    &:focus {
+      border-bottom: solid 0.1rem ${({ theme: { colors } }) => colors.tertiary};
+    }
   }
 `;
 
@@ -137,8 +194,11 @@ export const ProfileBtn = styled.a<AppearanceProps>`
 export const CodeContainer = styled.div`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     margin-top: 5.4rem;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     padding: 0 1.7rem;
+    gap: 3rem;
   }
 
   @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {

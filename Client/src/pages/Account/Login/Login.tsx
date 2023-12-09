@@ -7,20 +7,27 @@ import { LoginFormData, UserLogin } from "../../../types";
 import { login, reset } from "../../../utils/account/sliceAccount";
 import { fieldsLogin } from "../../../utils/formfields/fields";
 import { useTypedSelector } from "../../../app/store";
+import { toast } from "react-toastify";
 
 function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { isSuccess } = useTypedSelector((state) => state.account);
+  const { isSuccess, isError, message } = useTypedSelector(
+    (state) => state.account
+  );
 
   useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+
     if (isSuccess) {
       navigate("/home");
     }
 
     dispatch(reset());
-  }, [isSuccess, dispatch]);
+  }, [isSuccess, isError, message, dispatch, navigate]);
 
   const handleLoginAction = (values: LoginFormData) => {
     const user: UserLogin = {

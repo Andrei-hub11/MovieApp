@@ -171,6 +171,21 @@ public class CinemaAccountTests
     }
 
     [Fact]
+    public async Task CreateRole_WithValidData_ReturnsOkObject()
+    {
+        var controller = GetTestAccountControllerWithAuthorize();
+        var result = await controller.CreateRole("Admin");
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+
+        var message = TestResultHelpers.GetPropertyValue<string>(okResult.Value, "Message");
+
+        Assert.NotNull(message);
+        Assert.NotEmpty(message);
+        Assert.Equal("Função criada com sucesso.", message);
+    }
+
+    [Fact]
     public async Task Register_WithValidUser_ReturnsTokenAndUserInfo()
     {
         // Arrange
@@ -178,8 +193,8 @@ public class CinemaAccountTests
 
         var validUser = new UserRegisterModel
         {
-            UserName = "testuser",
-            Email = "test@example.com",
+            UserName = "test2user",
+            Email = "nath@1gmail.com",
             Password = "16147538##Aa",
             Role = "Admin"
         };
@@ -189,15 +204,15 @@ public class CinemaAccountTests
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
         Console.WriteLine(okResult);
-       
+
         var token = TestResultHelpers.GetPropertyValue<string>(okResult.Value, "Token");
         var user = TestResultHelpers.GetPropertyValue<UserDTO>(okResult.Value, "User");
         var roleList = TestResultHelpers.GetPropertyValue<List<string>>(okResult.Value, "Role");
 
         Assert.NotNull(token);
         Assert.NotEmpty(token);
-        Assert.Equal("testuser", user.UserName);
-        Assert.Equal("test@example.com", user.Email);
+        Assert.Equal("test2user", user.UserName);
+        Assert.Equal("nath@1gmail.com", user.Email);
         var propertyInfo = typeof(UserDTO).GetProperty("ProfileImagePath");
         Assert.NotNull(propertyInfo);
         foreach (var role in roleList)
@@ -208,7 +223,49 @@ public class CinemaAccountTests
 
     }
 
-    
+
+        [Fact]
+    public async Task Login_ValidUser_ReturnsTokenAndUserInfo()
+    {
+        // Arrange
+        var testuser = new UserRegisterModel
+        {
+            UserName = "test2user",
+            Email = "nath@1gmail.com",
+            Password = "16147538##Aa",
+            Role = "Admin"
+        };
+
+        var controller = GetTestAccountController();
+
+        var validUser = new UserLoginModel
+        {
+            Email = "nath@1gmail.com",
+            Password = "16147538##Aa",
+        };
+       await controller.Register(testuser);
+        var result = await controller.Login(validUser);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+
+        var token = TestResultHelpers.GetPropertyValue<string>(okResult.Value, "Token");
+        var user = TestResultHelpers.GetPropertyValue<UserDTO>(okResult.Value, "User");
+        var roleList = TestResultHelpers.GetPropertyValue<List<string>>(okResult.Value, "Role");
+
+        Assert.NotNull(token);
+        Assert.NotEmpty(token);
+        Assert.Equal("test2user", user.UserName);
+        Assert.Equal("nath@1gmail.com", user.Email);
+        var propertyInfo = typeof(UserDTO).GetProperty("ProfileImagePath");
+        Assert.NotNull(propertyInfo);
+        foreach (var role in roleList)
+        {
+            Assert.NotNull(role);
+            Assert.NotEmpty(role);
+        }
+
+    }
 
     [Fact]
     public async Task GetUsers_ReturnsOkResultWhenNoExceptionThrown()
@@ -235,40 +292,6 @@ public class CinemaAccountTests
         }
     }
 
-    [Fact]
-    public async Task Login_ValidUser_ReturnsTokenAndUserInfo()
-    {
-        // Arrange
-        var controller = GetTestAccountController();
 
-        var validUser = new UserLoginModel
-        {
-            Email = "test@example.com",
-            Password = "16147538##Aa",
-        };
 
-        var result = await controller.Login(validUser);
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Console.WriteLine(okResult);
-
-        var token = TestResultHelpers.GetPropertyValue<string>(okResult.Value, "Token");
-        var user = TestResultHelpers.GetPropertyValue<UserDTO>(okResult.Value, "User");
-        var roleList = TestResultHelpers.GetPropertyValue<List<string>>(okResult.Value, "Role");
-
-        Assert.NotNull(token);
-        Assert.NotEmpty(token);
-        Assert.Equal("testuser", user.UserName);
-        Assert.Equal("test@example.com", user.Email);
-        var propertyInfo = typeof(UserDTO).GetProperty("ProfileImagePath");
-        Assert.NotNull(propertyInfo);
-        foreach (var role in roleList)
-        {
-            Assert.NotNull(role);
-            Assert.NotEmpty(role);
-        }
-
-    }
 }
-
