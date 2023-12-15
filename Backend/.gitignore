@@ -43,3 +43,4 @@ msbuild.err
 msbuild.wrn
 
 wwwroot/images/
+Migrations

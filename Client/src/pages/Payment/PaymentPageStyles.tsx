@@ -33,6 +33,11 @@ export const InformationContainer = styled.div`
     margin: 0 auto;
     border-radius: 0.5rem;
   }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    width: 50rem;
+    height: 65rem;
+  }
 `;
 
 export const Divider = styled.hr`
@@ -65,7 +70,7 @@ export const InnerInformationContainer = styled.div<AppearanceGroupProps>`
   }
 
   @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
-    width: 50.5rem;
+    width: 48rem;
   }
 `;
 
@@ -88,6 +93,7 @@ export const InformationText = styled.p<AppearanceProps>`
     color: ${({ theme: { colors }, $hasColor }) =>
       $hasColor ? colors.tertiary : colors.text};
     letter-spacing: 0.1rem;
+    text-transform: ${({ $isUnique }) => ($isUnique ? "uppercase" : "")};
   }
 
   @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
@@ -107,6 +113,7 @@ export const SeatsCarousel = styled.div`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     display: flex;
     gap: 2.5rem;
+    text-transform: uppercase;
   }
 `;
 
@@ -297,5 +304,46 @@ export const LabelForm = styled.label`
 
   @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
     background: ${({ theme: { colors } }) => colors.secondary_bg};
+  }
+`;
+
+export const PaymentBtn = styled.a<AppearanceProps>`
+  text-align: center;
+  font-size: 1.6rem;
+  font-family: ${({ theme: { fonts } }) => fonts[1]};
+  letter-spacing: 0.1rem;
+  background: ${({ theme: { colors }, $primary }) =>
+    $primary ? colors.primary_btn : colors.secondary_btn};
+  color: ${({ theme: { colors }, $primary }) =>
+    $primary ? colors.light : "#000"};
+  padding: 0.6rem 2.5rem;
+  cursor: pointer;
+  font-weight: 400;
+  border-radius: 1rem;
+  border: ${({ theme: { colors }, $primary }) =>
+    $primary
+      ? `.2rem solid ${colors.primary_btn}`
+      : `.2rem solid ${colors.primary_btn}`};
+  outline: none;
+  flex: ${({ $isUnique }) => ($isUnique ? "1" : "")};
+
+  &:hover {
+    background: ${({ theme: { colors }, $primary }) =>
+      $primary ? "#fff" : colors.primary_btn};
+    border: ${({ theme: { colors }, $primary }) =>
+      $primary ? `.2rem solid ${colors.primary_btn}` : ""};
+    color: ${({ theme: { colors }, $primary }) =>
+      $primary ? "#000" : colors.secondary_btn};
+    transition: 0.3s ease-out;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    font-size: 1.6rem;
+    padding: 0.4rem 1.8rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    font-size: 1.8rem;
+    padding: 0.4rem 2rem;
   }
 `;

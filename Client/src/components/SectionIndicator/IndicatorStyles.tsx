@@ -11,7 +11,6 @@ export const IndicatorContainer = styled.div<AppearanceProps>`
   background: ${({ theme: { colors } }) => colors.primary};
 
   @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
-    position: ${({ $isUnique }) => ($isUnique ? "" : "fixed")};
     margin: 0;
     display: ${({ $isUnique }) => ($isUnique ? "none" : "")};
   }

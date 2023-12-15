@@ -78,7 +78,7 @@ export interface BtnList {
 }
 
 export interface DateList {
-  id: string;
+  Id: string;
   day: string;
   date: string;
 }
@@ -105,10 +105,37 @@ export interface TicketList {
 export interface AppearanceProps {
   $primary?: boolean;
   $hasColor?: string;
+  $hasMargin?: string;
   $isSelected?: boolean;
   $isUnique?: boolean;
   $isUsed?: boolean;
   disabled?: boolean;
+}
+
+export interface Seat {
+  Id: string;
+  IsReserved: boolean;
+  SeatNumber: string[];
+  SeatPrice: number;
+  RoomId: string;
+  gap: string | null;
+}
+
+export interface SeatsGroup {
+  group: number;
+  seats: Seat[];
+}
+
+export interface Room {
+  Id: string;
+  MovieTitle: string;
+  MovieSubtitle: string;
+  RoomNumber: string;
+  MovieCategory: string;
+  MovieImagePath: string;
+  MovieBackdropPath: string;
+  EventDateTime: Date;
+  Seats: Seat[];
 }
 
 export interface User {

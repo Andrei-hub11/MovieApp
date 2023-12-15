@@ -4,6 +4,51 @@ import { ErrorResponse } from "../../types";
 
 const API_URL = import.meta.env.VITE_MOVIE_APP_API_URL + "/api/v1/";
 
+const getRooms = async () => {
+  const { token } = manageJWTCookieState();
+
+  try {
+    const { data } = await axios.get(API_URL + `rooms`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    if ((error as AxiosError<ErrorResponse>).response) {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      throw new Error(axiosError.response?.data.Message || "Erro desconhecido");
+    } else {
+      throw new Error("Erro desconhecido");
+    }
+  }
+};
+
+const getRoomsByMovieTitle = async (movieTitle: string) => {
+  const { token } = manageJWTCookieState();
+
+  try {
+    const { data } = await axios.get(API_URL + `get-rooms-by-title`, {
+      params: {
+        movieTitle: movieTitle,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    if ((error as AxiosError<ErrorResponse>).response) {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      throw new Error(axiosError.response?.data.Message || "Erro desconhecido");
+    } else {
+      throw new Error("Erro desconhecido");
+    }
+  }
+};
+
 const getGiftCards = async () => {
   const { token } = manageJWTCookieState();
 
@@ -35,8 +80,6 @@ const createGiftCard = async () => {
       },
     });
 
-    console.log(data);
-
     return data;
   } catch (error) {
     if ((error as AxiosError<ErrorResponse>).response) {
@@ -49,8 +92,10 @@ const createGiftCard = async () => {
 };
 
 const cinemaService = {
-  createGiftCard,
+  getRooms,
+  getRoomsByMovieTitle,
   getGiftCards,
+  createGiftCard,
 };
 
 export default cinemaService;

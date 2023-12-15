@@ -41,7 +41,10 @@ function Sidebar() {
           return (
             <SideLInk
               key={link.route}
-              $primary={link.route === currentPath}
+              $primary={
+                link.route === currentPath ||
+                (link.route === "/home" && currentPath === "/salas")
+              }
               onClick={() => {
                 redirectTo(link.route);
               }}

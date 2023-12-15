@@ -36,7 +36,11 @@ public class AppDBContext: DbContext
         builder.Entity<RoomModel>()
        .Property(room => room.EventDateTime).IsRequired();
         builder.Entity<RoomModel>()
+     .Property(room => room.MovieTitle).IsRequired();
+        builder.Entity<RoomModel>()
       .Property(room => room.RoomNumber).IsRequired();
+        builder.Entity<RoomModel>()
+   .Property(room => room.MovieCategory).IsRequired();
         builder.Entity<SeatModel>()
            .Property(s => s.SeatNumber).IsRequired();
         

@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import accountReducer from "../utils/account/sliceAccount";
 import cinemaReducer from "../utils/cinema/sliceCinema";
+import purchaseReducer from "../utils/purchase/purchaseSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 export const store = configureStore({
   reducer: {
     account: accountReducer,
     cinema: cinemaReducer,
+    purchase: purchaseReducer,
   },
 });
 

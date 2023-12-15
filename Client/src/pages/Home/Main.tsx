@@ -1,8 +1,16 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import {
+  ManagerReset,
+  getRooms,
+  getRoomsByMovieTitle,
+} from "../../utils/cinema/sliceCinema";
+import { images, movies, moviesComingSoon } from "../../constants/constants";
+import { useAppDispatch, useTypedSelector } from "../../app/store";
 import { BtnList, IconProps, InputsProps, SliderSettings } from "../../types";
 
 import {
@@ -34,17 +42,28 @@ import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 
 import SearchIcon from "../../assets/ic_round-search.svg";
-import { images, movies, moviesComingSoon } from "../../constants/constants";
 
 function Main() {
+  const navigate = useNavigate();
+  const { Rooms, isManagerSuccess, isManagerError } = useTypedSelector(
+    (state) => state.cinema
+  );
+  const dispatch = useAppDispatch();
   const [width, setWidth] = useState<number>(0);
   const carousel = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    dispatch(getRooms());
     if (carousel.current) {
       setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
     }
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isManagerSuccess) {
+      dispatch(ManagerReset());
+    }
+  }, [isManagerError, isManagerSuccess, dispatch]);
 
   const settings: SliderSettings = {
     dots: true,
@@ -84,6 +103,11 @@ function Main() {
       btn_text: "Aventura",
     },
   ];
+
+  const handleSelectedMovie = (movieTitle: string) => {
+    dispatch(getRoomsByMovieTitle(movieTitle));
+    navigate("/salas");
+  };
 
   return (
     <CentralSection>
@@ -160,9 +184,12 @@ function Main() {
         </FlexContainer>
       </Container>
       <MoveListContainer>
-        {images.map((movie) => (
-          <MovieContainer key={movie}>
-            <MovieImage src={movie} />
+        {Rooms?.map((room) => (
+          <MovieContainer key={room.Id}>
+            <MovieImage
+              src={import.meta.env.VITE_MOVIE_APP_API_URL + room.MovieImagePath}
+              onClick={() => handleSelectedMovie(room.MovieTitle)}
+            />
           </MovieContainer>
         ))}
       </MoveListContainer>

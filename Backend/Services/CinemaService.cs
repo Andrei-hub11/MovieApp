@@ -5,6 +5,8 @@ using Backend.Services.Interfaces;
 using ErrorOr;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using shortid;
+using shortid.Configuration;
 using System.Linq;
 using Web_API_JWT.Exceptons;
 
@@ -27,7 +29,21 @@ public class CinemaService : ICinema
     public async Task<IEnumerable<RoomModel>> GetRoomsAsync()
     {
 
-        return await _context.Room.Include(r => r.Seats).ToListAsync();
+        
+
+        return await _context.Room 
+            .OrderBy(r => r.EventDateTime) 
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<RoomModel>> GetRoomsByMovieTitleAsync(string movieTitle)
+    {
+
+        return await _context.Room
+         .Where(r => r.MovieTitle == movieTitle)
+         .Include(r => r.Seats.OrderBy(s => s.SeatNumber))
+         .OrderBy(r => r.EventDateTime)
+         .ToListAsync();
     }
 
 
@@ -37,6 +53,15 @@ public class CinemaService : ICinema
         return await _context.GiftCard.ToListAsync();
     }
 
+    public async Task<string> GetOrderIdAsync()
+    {
+        return await Task.Run(() =>
+        {
+            var options = new GenerationOptions(useNumbers: true, length: 13);
+            string id = ShortId.Generate(options);
+            return "#" + id;
+        });
+    }
     public async Task<RoomModel> CreateRoomAsync(RoomModel room)
     {
 

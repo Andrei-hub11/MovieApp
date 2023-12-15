@@ -8,7 +8,9 @@ namespace Backend.Services.Interfaces;
 public interface ICinema
 {
     Task<IEnumerable<RoomModel>> GetRoomsAsync();
+    Task<IEnumerable<RoomModel>> GetRoomsByMovieTitleAsync( string movieTitle);
     Task<IEnumerable<GiftCardModel>> GetGiftCardsAsync();
+    Task<string> GetOrderIdAsync();
     Task<RoomModel> CreateRoomAsync(RoomModel room);
     Task<ErrorOr<TicketModel>> CreateTicketAsync(Guid roomId, TicketDTO ticket);
     Task<GiftCardModel> CreateGiftCodigoAsync();

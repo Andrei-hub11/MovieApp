@@ -3,7 +3,6 @@ import { AppearanceProps } from "../../types";
 
 export const Header = styled.header<AppearanceProps>`
   grid-area: headernav;
-  padding: 1.2rem 1.6rem;
 
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     display: ${({ $isUnique }) => ($isUnique ? "none" : "flex")};
@@ -18,10 +17,12 @@ export const Header = styled.header<AppearanceProps>`
 
   @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
     position: sticky;
+    top: 0;
     display: flex;
     height: unset;
     padding: 1.2rem 1.6rem;
     z-index: 100;
+    background: ${({ theme: { colors } }) => colors.bg};
   }
 `;
 
@@ -68,6 +69,7 @@ export const Navegation = styled.nav`
     display: flex;
     justify-content: space-between;
     width: 100%;
+    background: ${({ theme: { colors } }) => colors.bg};
   }
 `;
 

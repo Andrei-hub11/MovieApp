@@ -21,6 +21,9 @@ using CinemaAppUnitTest.Tests2;
 using Backend.SignalR.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
+using System;
+using shortid.Configuration;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CinemaAppUnitTest;
 
@@ -129,7 +132,10 @@ public class CinemaControllerTests
         {
             RoomNumber = "A-5",
             EventDateTime = new DateTime(2026, 1, 1, 0, 0, 0),
+            MovieTitle = "Avatar",
+            MovieCategory = "Aventura"
         };
+
 
         // Act
         var result = await controller.CreateRoom(validRoom);
@@ -149,6 +155,7 @@ public class CinemaControllerTests
         Assert.NotNull(room);
         Assert.Equal("Sala criada com sucesso", message);
         Assert.Equal("A-5", room.RoomNumber);
+        Assert.Equal("Avatar", room.MovieTitle);
     }
 
     [Fact]
@@ -181,11 +188,40 @@ public class CinemaControllerTests
     }
 
     [Fact]
+    public async Task Should_Return_GuidForAuthorizedUser()
+    {
+        var controller = GetTestCinemaController();
+
+        var result = await controller.CreateGiftCard();
+
+        Assert.IsType<OkObjectResult>(result);
+
+        var okResult = result as OkObjectResult;
+
+        Assert.NotNull(okResult);
+
+        var gift = TestResultHelpers.GetPropertyValue<GiftCardModel>(okResult.Value, "GiftCard");
+
+        Assert.NotNull(gift);
+        Assert.False(gift.IsUsed);
+        Assert.True(Guid.TryParse(gift.GiftCodigo.ToString(), out var parsedGuid));
+    }
+
+    [Fact]
     public async Task GetRoom_ReturnsOkForAuthorizedUser()
     {
         var controller = GetTestCinemaController();
 
+        var validRoom = new RoomModel()
+        {
+            RoomNumber = "A-5",
+            EventDateTime = new DateTime(2026, 1, 1, 0, 0, 0),
+            MovieTitle = "Avatar",
+            MovieCategory = "Aventura"
+        };
+
         // Act
+        await controller.CreateRoom(validRoom);
         var result = await controller.GetRoom();
 
         // Assert
@@ -208,7 +244,22 @@ public class CinemaControllerTests
 
     }
 
+    [Fact]
+    public async Task GetOrderIdAsync_ShouldGenerateOrderId()
+    {
+        var controller = GetTestCinemaController();
 
+     
+        var result = await controller.GetOrderId();
+
+        var okResult = result as OkObjectResult;
+        var orderId = TestResultHelpers.GetPropertyValue<string>(okResult.Value, "OrderId");
+
+        Assert.NotNull(orderId);
+        Assert.NotEmpty(orderId);
+        Assert.StartsWith("#", orderId);
+        Assert.Equal(14, orderId.Length);
+    }
 
     [Fact]
     public async Task UpdateRoom_ReturnsOkResultWhenValidationPassesForAuthorizeAdmin()
@@ -219,6 +270,8 @@ public class CinemaControllerTests
         {
             RoomNumber = "A-5",
             EventDateTime = new DateTime(2026, 1, 1, 0, 0, 0),
+            MovieTitle = "Avatar",
+            MovieCategory = "Aventura"
         };
 
         var result = await controller.CreateRoom(validRoom);
@@ -259,6 +312,8 @@ public class CinemaControllerTests
         {
             RoomNumber = "A-5",
             EventDateTime = new DateTime(2026, 1, 1, 0, 0, 0),
+            MovieTitle = "Avatar",
+            MovieCategory = "Aventura"
         };
 
         var result = await controller.CreateRoom(validRoom);
@@ -304,6 +359,8 @@ public class CinemaControllerTests
         {
             RoomNumber = "2",
             EventDateTime = new DateTime(2026, 1, 1, 0, 0, 0),
+            MovieTitle = "Avatar",
+            MovieCategory = "Aventura"
         };
         var result = await controller.CreateRoom(validRoom);
         var okResult = result as OkObjectResult;
@@ -368,6 +425,8 @@ public class CinemaControllerTests
         {
             RoomNumber = "2",
             EventDateTime = new DateTime(2026, 1, 1, 0, 0, 0),
+            MovieTitle = "Avatar",
+            MovieCategory = "Aventura"
         };
         
        var roomResult = await cinemaController.CreateRoom(validRoom);
@@ -447,6 +506,8 @@ public class CinemaControllerTests
         {
             RoomNumber = "2",
             EventDateTime = new DateTime(2026, 1, 1, 0, 0, 0),
+            MovieTitle = "Avatar",
+            MovieCategory = "Aventura"
         };
 
         var roomResult = await cinemaController.CreateRoom(validRoom);
@@ -477,7 +538,7 @@ public class CinemaControllerTests
 
         var validTicket = new TicketDTO(
              Title: "Test",
-     AmountPaid: 0,
+     AmountPaid: 1.0M,
      EventDateTime: new EventDateTime
      {
          Date = DateTime.Parse("2025-11-16"),

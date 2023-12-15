@@ -32,10 +32,12 @@ export const Btn = styled.a<AppearanceProps>`
   }
 
   @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
+    padding: 0.4rem 1.8rem;
   }
 
   @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
-    padding: 0.2rem 1.8rem;
+    font-size: 1.8rem;
+    padding: 0.2rem 2rem;
   }
 `;

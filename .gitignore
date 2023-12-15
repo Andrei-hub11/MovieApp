@@ -4,3 +4,5 @@
 *.sln
 Client/src/utils/variables/SuccessOrError.ts
 
+Client/src/pages/Profile
+Client/src/pages/Room

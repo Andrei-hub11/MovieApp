@@ -62,6 +62,15 @@ export const routes: RouteObject[] = [
       <ProtectedRoute>
         <GridContainer gridAreas={RoomAreas}>
           <RoomPage />
+          <Sidebar />
+          <Navbar
+            indicatorProps={{
+              sectionName: "Seleção de lugares",
+              src: indicatorIcon,
+              alt: "icone da seção de perfil",
+            }}
+            isUnique={true}
+          />
         </GridContainer>
       </ProtectedRoute>
     ),

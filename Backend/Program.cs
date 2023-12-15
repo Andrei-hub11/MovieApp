@@ -70,8 +70,6 @@ var builder = WebApplication.CreateBuilder(args);
         };
 
 
-
-
     });
 
     builder.Services.Configure<IdentityOptions>(options =>
@@ -99,7 +97,9 @@ var builder = WebApplication.CreateBuilder(args);
 }
 
 var app = builder.Build();
+await DeleteRecord.DeleteRecordAsync(app.Configuration);
 await SeedData.CreateInitialsRolesAsync(app.Services);
+await RoomData.CreateRoomsForDateRangeAsync(app.Services);
 
 
 // Configure the HTTP request pipeline.

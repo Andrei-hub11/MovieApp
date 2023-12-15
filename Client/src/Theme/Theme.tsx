@@ -9,6 +9,10 @@ export const theme = {
     secondary_btn: "#fff",
     bg: "#080305",
     secondary_bg: "#1E1E1E",
+    primary_seat:
+      "invert(67%) sepia(67%) saturate(760%) hue-rotate(160deg) brightness(94%) contrast(94%)",
+    secondary_seat:
+      "invert(39%) sepia(96%) saturate(543%) hue-rotate(67deg) brightness(102%) contrast(85%)",
   },
   fonts: ["Raleway, sans-serif", "Dosis, sans-serif"],
   background: {

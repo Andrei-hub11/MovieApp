@@ -46,6 +46,33 @@ public class CinemaController : ControllerBase
         }
     }
 
+
+    [Authorize(Policy = "UserOrAdmin")]
+    [HttpGet("get-rooms-by-title")]
+    public async Task<IActionResult> GetRoomByMovieTitle([FromQuery] string movieTitle)
+    {
+        if (string.IsNullOrEmpty(movieTitle))
+        {
+            return BadRequest(new
+            {
+                Message = $"O parametro movietitle está ausente.",
+            });
+        }
+        try
+        {
+            var result = await _cinemaService.GetRoomsByMovieTitleAsync(movieTitle);
+            return Ok(new { Rooms = result });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                Message = "Ocorreu um erro durante a busca das salas.",
+                Error = ex.Message
+            });
+        }
+    }
+
     [Authorize(Policy = "Admin")]
     [HttpGet("giftcards")]
     public async Task<IActionResult> GetGiftCards()
@@ -54,6 +81,26 @@ public class CinemaController : ControllerBase
         {
             var result = await _cinemaService.GetGiftCardsAsync();
             return Ok(new { GiftCards = result });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                Message = "Ocorreu um erro durante a busca das salas.",
+                Error = ex.Message
+            });
+        }
+    }
+
+
+    [Authorize(Policy = "UserOrAdmin")]
+    [HttpGet("order-id")]
+    public async Task<IActionResult> GetOrderId()
+    {
+        try
+        {
+            var result = await _cinemaService.GetOrderIdAsync() ;
+            return Ok(new { OrderId = result });
         }
         catch (Exception ex)
         {
@@ -92,7 +139,7 @@ public class CinemaController : ControllerBase
 
     }
 
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "UserOrAdmin")]
     [HttpPost("create-ticket/{roomId}")]
     public async Task<IActionResult> CreateTicket(Guid roomId, [FromBody] TicketDTO ticket)
     {
