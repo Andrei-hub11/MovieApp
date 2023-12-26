@@ -3,7 +3,7 @@ import { RouteObject } from "react-router-dom";
 import GridContainer from "../../components/Grid/GridContainer";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Navbar from "../../components/Navbar/Navbar";
-import Main from "../../pages/Home/Main";
+import Home from "../../pages/Home/Home";
 import Navbottom from "../../components/Nabottom/Navbottom";
 
 import {
@@ -34,6 +34,10 @@ export const routes: RouteObject[] = [
     element: <Register />,
   },
   {
+    path: "/register-admin",
+    element: <Register />,
+  },
+  {
     path: "/login",
     element: <Login />,
   },
@@ -50,7 +54,7 @@ export const routes: RouteObject[] = [
               alt: "icone da seção de perfil",
             }}
           />
-          <Main />
+          <Home />
           <Navbottom />
         </GridContainer>
       </ProtectedRoute>

@@ -1,13 +1,22 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GiftCard, Room, Seat, SeatsGroup, User } from "../../types";
+import {
+  GiftCard,
+  Room,
+  Seat,
+  SeatsGroup,
+  TicketData,
+  User,
+} from "../../types";
 import cinemaService from "./cinemaService";
 
 interface CinemaState {
   Users: User[];
-  Tickets: [];
+  Tickets: [] | TicketData;
   Rooms: Room[] | [];
-  MovieSelected: Room[] | [];
-  GiftCards: GiftCard[] | null;
+  movieOfRoom: string;
+  RoomListMovieSelected: Room[] | [];
+  GiftCards: GiftCard[] | [];
+  isGiftCardValid: boolean | "";
   seatsGroup: SeatsGroup[] | [];
   isManagerError: boolean;
   isManagerSuccess: boolean;
@@ -27,7 +36,8 @@ const initialState: CinemaState = {
   ],
   Tickets: [],
   Rooms: [],
-  MovieSelected: [],
+  movieOfRoom: "",
+  RoomListMovieSelected: [],
   seatsGroup: [
     { group: 1, seats: [] },
     { group: 2, seats: [] },
@@ -36,7 +46,8 @@ const initialState: CinemaState = {
     { group: 5, seats: [] },
     { group: 6, seats: [] },
   ],
-  GiftCards: null,
+  GiftCards: [],
+  isGiftCardValid: "",
   isManagerError: false,
   isManagerSuccess: false,
   isManagerLoading: false,
@@ -73,6 +84,18 @@ export const getGiftCards = createAsyncThunk("cinema/get-gift", async () => {
   }
 });
 
+export const getCheckGiftCard = createAsyncThunk(
+  "cinema/get-checkgift",
+  async (giftCode: string) => {
+    try {
+      return await cinemaService.getCheckGiftCard(giftCode);
+    } catch (error) {
+      const message = (error as Error).message;
+      throw new Error(message);
+    }
+  }
+);
+
 export const createGiftCard = createAsyncThunk(
   "cinema/create-gift",
   async () => {
@@ -105,6 +128,10 @@ const cinemaSlice = createSlice({
         { group: 6, seats: [] },
       ];
     },
+    setMovieOfRoom: (state, action: PayloadAction<string>) => {
+      state.movieOfRoom = action.payload;
+    },
+    // função auxiliar, para ajudar a ordernar as cadeiras conforme planejado para a interface
     addGroupSeats: (
       state,
       action: PayloadAction<{
@@ -129,11 +156,9 @@ const cinemaSlice = createSlice({
           ],
         };
 
-        // Cria um novo array de grupos com o grupo atualizado
         const updatedGroups = [...state.seatsGroup];
         updatedGroups[groupIndex] = updatedGroup;
 
-        // Retorna o novo estado com os grupos atualizados
         return {
           ...state,
           seatsGroup: updatedGroups,
@@ -143,6 +168,7 @@ const cinemaSlice = createSlice({
       // Retorna o estado original se o grupo não for encontrado
       return state;
     },
+    // função auxiliar, para ajudar a ordernar as cadeiras conforme planejado para a interface
     addGapToSpecificItems: (
       state,
       action: PayloadAction<{
@@ -208,7 +234,7 @@ const cinemaSlice = createSlice({
         (state, action: PayloadAction<CinemaState>) => {
           state.isManagerLoading = false;
           state.isManagerSuccess = true;
-          state.MovieSelected = action.payload.Rooms;
+          state.RoomListMovieSelected = action.payload.Rooms;
         }
       )
       .addCase(getRoomsByMovieTitle.rejected, (state, action) => {
@@ -234,6 +260,22 @@ const cinemaSlice = createSlice({
         state.isManagerError = true;
         state.ManagerMessage = action.error?.message || "Unknown error";
       })
+      .addCase(getCheckGiftCard.pending, (state) => {
+        state.isManagerLoading = true;
+      })
+      .addCase(
+        getCheckGiftCard.fulfilled,
+        (state, action: PayloadAction<boolean>) => {
+          state.isManagerLoading = false;
+          state.isManagerSuccess = true;
+          state.isGiftCardValid = action.payload;
+        }
+      )
+      .addCase(getCheckGiftCard.rejected, (state, action) => {
+        state.isManagerLoading = false;
+        state.isManagerError = true;
+        state.ManagerMessage = action.error?.message || "Unknown error";
+      })
       .addCase(createGiftCard.pending, (state) => {
         state.isManagerLoading = true;
       })
@@ -255,6 +297,7 @@ const cinemaSlice = createSlice({
 
 export const {
   ManagerReset,
+  setMovieOfRoom,
   addGroupSeats,
   addGapToSpecificItems,
   resetSeatsGroup,

@@ -15,7 +15,9 @@ import Icon from "../Icon/Icon";
 import { navicons } from "../../constants/constants";
 
 function Sidebar() {
-  const { User, Role } = useTypedSelector((state) => state.account);
+  const { User, Role, hasNotification } = useTypedSelector(
+    (state) => state.account
+  );
   const { redirectTo } = useRedirect();
   const location = useLocation();
 
@@ -44,6 +46,10 @@ function Sidebar() {
               $primary={
                 link.route === currentPath ||
                 (link.route === "/home" && currentPath === "/salas")
+              }
+              $isUnique={
+                (hasNotification && link.route === "/ingressos") ||
+                (hasNotification && link.route === "/notifications")
               }
               onClick={() => {
                 redirectTo(link.route);

@@ -89,16 +89,23 @@ export interface LinkList {
   $primary: boolean;
 }
 
-export interface TicketList {
-  id: string;
-  orderId: string;
-  title: string;
-  subtitle?: string;
-  eventTime: Date;
-  eventDate: Date;
-  roomNumber: string;
-  amountPaid: number;
-  purcheadSeats: string[];
+export interface EventDateTime {
+  Date: Date;
+  Time: Date | string;
+}
+
+export interface TicketData {
+  Title: string;
+  Subtitle?: string;
+  OrderId: string;
+  AmountPaid: number;
+  EventDateTime: EventDateTime;
+  RoomNumber: string;
+  PurchasedSeats: string[];
+  UserId: string;
+}
+
+export interface UserTickets extends TicketData {
   isUsed: boolean;
 }
 
@@ -109,6 +116,7 @@ export interface AppearanceProps {
   $isSelected?: boolean;
   $isUnique?: boolean;
   $isUsed?: boolean;
+  $isValid?: boolean | string;
   disabled?: boolean;
 }
 
@@ -143,7 +151,7 @@ export interface User {
   UserName: string;
   Email: string;
   ProfileImagePath: string | null;
-  Tickets: [];
+  Tickets: [] | UserTickets[];
 }
 
 export interface RegisterFormData {

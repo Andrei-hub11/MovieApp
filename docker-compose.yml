@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  sql:
+    build: ./setup
+    container_name: sql_server
+    ports:
+      - "1433:1433"
+    environment:
+      - MSSQL_PID=Express
+      - MSSQL_DATABASE=CinemaApp
+    networks:
+      - mynetwork
+
+  backend:
+    build: ./backend
+    container_name: backend
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sql_server,1433;Database=CinemaApp;User Id=SA;Password=S3nh@V@lid4;Integrated Security=false; TrustServerCertificate=true
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80;https://+:443
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=84204820492
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+      - "5204:80"
+      - "5254:443"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    depends_on:
+      - sql
+    networks:
+      - mynetwork
+
+  client:
+    container_name: client
+    build: ./client
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    environment:
+      - VITE_MOVIE_APP_API_URL=http://backend:7238
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
+  TicketData,
   UpdateImage,
   UpdateUser,
   User,
@@ -16,6 +17,8 @@ interface AccountUserState {
   isLoading: boolean;
   message: string;
   Role: [string];
+  hasNotification: boolean;
+  userNotification: string[] | [];
 }
 
 const initialState: AccountUserState = {
@@ -27,6 +30,8 @@ const initialState: AccountUserState = {
     Tickets: [],
   },
   Role: [""],
+  hasNotification: false,
+  userNotification: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -62,6 +67,22 @@ export const updateProfileUser = createAsyncThunk(
   async (userData: UpdateUser) => {
     try {
       return await accountService.updateProfileUser(userData);
+    } catch (error) {
+      const message = (error as Error).message;
+      throw new Error(message);
+    }
+  }
+);
+
+export const createTicket = createAsyncThunk(
+  "cinema/create-ticket",
+  async (data: { roomId: string; ticket: TicketData; giftCode: string }) => {
+    try {
+      return await accountService.createTicket(
+        data.roomId,
+        data.ticket,
+        data.giftCode
+      );
     } catch (error) {
       const message = (error as Error).message;
       throw new Error(message);
@@ -107,6 +128,14 @@ const accountSlice = createSlice({
       state.isSuccess = false;
       state.isError = false;
       state.message = "";
+    },
+    setNewNotification: (state, action: PayloadAction<string[]>) => {
+      state.userNotification = action.payload;
+      state.hasNotification = true;
+    },
+    resetNotifications: (state) => {
+      state.userNotification = [];
+      state.hasNotification = false;
     },
   },
   extraReducers: (builder) => {
@@ -178,6 +207,19 @@ const accountSlice = createSlice({
         state.isError = true;
         state.message = action.error?.message || "Unknown error";
       })
+      .addCase(createTicket.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createTicket.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.User.Tickets = action.payload.Ticket;
+      })
+      .addCase(createTicket.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.error?.message || "Unknown error";
+      })
       .addCase(getMe.pending, (state) => {
         state.isLoading = true;
       })
@@ -216,5 +258,6 @@ const accountSlice = createSlice({
   },
 });
 
-export const { reset } = accountSlice.actions;
+export const { reset, setNewNotification, resetNotifications } =
+  accountSlice.actions;
 export default accountSlice.reducer;

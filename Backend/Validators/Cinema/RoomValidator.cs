@@ -7,8 +7,8 @@ public class RoomValidator : AbstractValidator<RoomModel>
 {
     public RoomValidator()
     {
-        RuleFor(room => room.RoomNumber)
-            .NotEmpty().WithMessage("O número da sala é obrigatório.")
+        RuleFor(room => room.RoomNumber).NotNull().WithMessage("A propriedade RoomNumber é obrigatória")
+            .NotEmpty().WithMessage("O RoomNumber não pode estar vazio.")
             .MaximumLength(10).WithMessage("O número da sala deve ter no máximo 50 caracteres.");
         RuleFor(room => room.EventDateTime)
            .NotNull().WithMessage("A data do evento é obrigatória.")

@@ -9,7 +9,10 @@ namespace Backend.Models;
 public class TicketModel
 {
     public Guid Id { get; set; }
+    public string OrderId { get; set; }
+    public string RoomNumber { get; set; }
     public string Title { get; set; }
+    public string? Subtitle { get; set; }
     public decimal AmountPaid { get; set; }
     public EventDateTime EventDateTime { get; set; }
     public List<string> PurchasedSeats { get; set; }

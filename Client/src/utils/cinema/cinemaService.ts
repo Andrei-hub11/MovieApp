@@ -8,7 +8,7 @@ const getRooms = async () => {
   const { token } = manageJWTCookieState();
 
   try {
-    const { data } = await axios.get(API_URL + `rooms`, {
+    const { data } = await axios.get(API_URL + "rooms-events-coming", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -29,7 +29,7 @@ const getRoomsByMovieTitle = async (movieTitle: string) => {
   const { token } = manageJWTCookieState();
 
   try {
-    const { data } = await axios.get(API_URL + `get-rooms-by-title`, {
+    const { data } = await axios.get(API_URL + `rooms-by-title`, {
       params: {
         movieTitle: movieTitle,
       },
@@ -70,6 +70,27 @@ const getGiftCards = async () => {
   }
 };
 
+const getCheckGiftCard = async (giftCode: string) => {
+  const { token } = manageJWTCookieState();
+
+  try {
+    const { data } = await axios.get(API_URL + `check-giftcard/${giftCode}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    if ((error as AxiosError<ErrorResponse>).response) {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      throw new Error(axiosError.response?.data.Message || "Erro desconhecido");
+    } else {
+      throw new Error("Erro desconhecido");
+    }
+  }
+};
+
 const createGiftCard = async () => {
   const { token } = manageJWTCookieState();
 
@@ -93,8 +114,9 @@ const createGiftCard = async () => {
 
 const cinemaService = {
   getRooms,
-  getRoomsByMovieTitle,
   getGiftCards,
+  getCheckGiftCard,
+  getRoomsByMovieTitle,
   createGiftCard,
 };
 

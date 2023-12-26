@@ -1,3 +1,4 @@
+import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { render, fireEvent } from "@testing-library/react";
@@ -9,7 +10,6 @@ import { navicons } from "../../../constants/constants";
 import Navbottom from "../Navbottom";
 import useRedirect from "../../../utils/customHook/useRedirect/useRedirect";
 import { RootState, store } from "../../../app/store";
-import { Provider } from "react-redux";
 
 // Mock para useRedirect
 vi.mock("../../../utils/customHook/useRedirect/useRedirect", () => ({
@@ -45,12 +45,57 @@ const mockState: RootState = {
     isLoading: false,
     message: "",
   },
+  cinema: {
+    Users: [
+      {
+        Id: "",
+        UserName: "",
+        Email: "",
+        ProfileImagePath: "",
+        Tickets: [],
+      },
+    ],
+    Tickets: [],
+    Rooms: [],
+    RoomListMovieSelected: [],
+    seatsGroup: [
+      { group: 1, seats: [] },
+      { group: 2, seats: [] },
+      { group: 3, seats: [] },
+      { group: 4, seats: [] },
+      { group: 5, seats: [] },
+      { group: 6, seats: [] },
+    ],
+    GiftCards: [],
+    isGiftCardValid: "",
+    isManagerError: false,
+    isManagerSuccess: false,
+    isManagerLoading: false,
+    ManagerMessage: "",
+  },
+  purchase: {
+    cartItems: [],
+    currentRoom: "",
+    orderId: "",
+    isUsedGift: false,
+    subtotal: 0,
+    discount: 0,
+    total: 0,
+    isPurchaseLoading: false,
+    isPurchaseSuccess: false,
+    isPurchaseError: false,
+    isProcessing: false,
+    error: null,
+  },
 };
 
 // Implementando o mock de useTypedSelector para retornar o estado simulado
 (mockedUseTypedSelector as Mock).mockImplementation(
-  (selectorFn: (state: RootState) => (typeof mockState)["account"]) =>
-    selectorFn(mockState)
+  (
+    selectorFn: (
+      state: RootState
+    ) => Pick<RootState, "account" | "cinema" | "purchase">
+  ) => selectorFn(mockState)
 );
 
 describe("NavBottom Component", () => {
@@ -60,7 +105,7 @@ describe("NavBottom Component", () => {
     });
 
     const { getAllByAltText } = render(
-      <Provider store={store}>
+      <Provider store={mockState}>
         <ThemeProvider theme={theme}>
           <MemoryRouter initialEntries={["/"]} initialIndex={0}>
             <Navbottom />

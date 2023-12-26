@@ -28,6 +28,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@microsoft/signalr": "^8.0.0",
     "@reduxjs/toolkit": "^1.9.7",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.1.2",

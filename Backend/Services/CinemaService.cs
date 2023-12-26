@@ -36,6 +36,22 @@ public class CinemaService : ICinema
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<RoomModel>> GetUpcomingRoomEventsAsync()
+    {
+
+        DateTime today = DateTime.Today;
+        DateTime midnightTomorrow = today.AddDays(2);
+
+        var roomsWithEvents = await _context.Room
+            .Where(r => r.EventDateTime > today && r.EventDateTime < midnightTomorrow) // Eventos até meia-noite do dia seguinte
+            .OrderBy(r => r.EventDateTime)
+            .GroupBy(r => r.MovieTitle) // Agrupando por título do filme para evitar duplicatas
+            .Select(g => g.First()) // Selecionando o primeiro de cada grupo (evita duplicatas de MovieTitle)
+            .ToListAsync();
+
+        return roomsWithEvents;
+    }
+
     public async Task<IEnumerable<RoomModel>> GetRoomsByMovieTitleAsync(string movieTitle)
     {
 
@@ -51,6 +67,16 @@ public class CinemaService : ICinema
     {
 
         return await _context.GiftCard.ToListAsync();
+    }
+
+
+    public async Task<bool> GetCheckGiftCardAsync(Guid giftCode)
+    {
+
+      var giftCard = await _context.GiftCard.FirstOrDefaultAsync(gift => gift.GiftCodigo == giftCode &&
+      gift.IsUsed == false);
+
+        return giftCard != null;
     }
 
     public async Task<string> GetOrderIdAsync()
@@ -76,7 +102,7 @@ public class CinemaService : ICinema
 
         decimal amount = 0;
         var existingRoom = await _context.Room.FindAsync(roomId);
-        var (purchasedSeats, title, amountPaid, userId) = ticket;
+        var (purchasedSeats, title, subtitle, amountPaid, userId, orderid, roomnumber) = ticket;
 
         var user = await _userManager.FindByIdAsync(userId);
 
@@ -123,6 +149,9 @@ public class CinemaService : ICinema
         var newTicket = new TicketModel
         {
             Title = title,
+            Subtitle = subtitle ?? null,
+            OrderId = orderid,
+            RoomNumber = roomnumber,
             AmountPaid = amount,
             UserId = userId,
             EventDateTime = ticket.EventDateTime,

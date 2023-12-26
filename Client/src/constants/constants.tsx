@@ -1,4 +1,4 @@
-import { IconsList, MovieSlider, TicketList } from "../types";
+import { IconsList, MovieSlider } from "../types";
 
 import image1 from "../assets/1.jpg";
 import image2 from "../assets/2.jpg";
@@ -24,6 +24,9 @@ import UsersSelected from "../assets/users-selected.svg";
 
 import interestelarImage from "../assets/interestelar.jpg";
 import avatarImage from "../assets/avatar-t.jpg";
+import hobbitImage from "../assets/o hobbit, a desolação de smaug.jpg";
+import panteraNegra2Image from "../assets/pantera negra 2.jpg";
+import johnWickImage from "../assets/johnwick4.jpg";
 
 export const images = [image1, image2, image3, image4, image5];
 
@@ -65,70 +68,34 @@ export const navicons: IconsList[] = [
 export const movies: MovieSlider[] = [
   {
     imageSrc: avatarImage,
-    altText: "Imagem 1",
+    altText: "imagem do filme Avatar",
     status: "Em cartaz",
     buttonText: "Avatar: O Caminho da Água",
     $primary: true,
   },
   {
     imageSrc: interestelarImage,
-    altText: "Imagem 2",
+    altText: "imagem do filme Interestelar",
     status: "Em breve",
     buttonText: "Interestelar",
   },
-];
-
-const eventTime: Date = new Date();
-eventTime.setHours(12, 0, 0, 0);
-
-export const Tickets: TicketList[] = [
   {
-    id: "1",
-    orderId: "#257481-124",
-    title: "Avatar",
-    subtitle: "O Caminho da Água",
-    eventTime: eventTime,
-    eventDate: new Date(2023, 11, 25),
-    amountPaid: 60,
-    roomNumber: "5",
-    purcheadSeats: ["A-1", "A-2", "A-3", "A-4", "A-5", "A-6"],
-    isUsed: false,
+    imageSrc: hobbitImage,
+    altText: "imagem do filme O Hobbit",
+    status: "Em breve",
+    buttonText: "O Hobbit: A Desolação de Smaug",
   },
   {
-    id: "2",
-    orderId: "#257481-124",
-    title: "Avatar",
-    subtitle: "O Caminho da Água",
-    eventTime: eventTime,
-    eventDate: new Date(2023, 11, 25),
-    amountPaid: 60,
-    roomNumber: "1",
-    purcheadSeats: ["A-1", "A-2", "A-3"],
-    isUsed: false,
+    imageSrc: panteraNegra2Image,
+    altText: "imagem do filme Pantera Negra: Wakanda Para Sempre",
+    status: "Em breve",
+    buttonText: "Pantera Negra: Wakanda Para Sempre",
   },
   {
-    id: "3",
-    orderId: "#257481-124",
-    title: "Avatar",
-    subtitle: "O Caminho da Água",
-    eventTime: eventTime,
-    eventDate: new Date(2023, 11, 25),
-    amountPaid: 60,
-    roomNumber: "2",
-    purcheadSeats: ["A-1", "A-2", "A-3"],
-    isUsed: false,
-  },
-  {
-    id: "4",
-    orderId: "#257481-124",
-    title: "Avatar",
-    subtitle: "O Caminho da Água",
-    eventTime: eventTime,
-    eventDate: new Date(2023, 11, 25),
-    amountPaid: 60,
-    roomNumber: "3",
-    purcheadSeats: ["A-1", "A-2", "A-3"],
-    isUsed: true,
+    imageSrc: johnWickImage,
+    altText: "imagem do filme John Wick: Baba Yaga",
+    status: "Em cartaz",
+    buttonText: "John Wick: Baba Yaga",
   },
 ];
 

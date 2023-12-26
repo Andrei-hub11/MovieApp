@@ -11,12 +11,12 @@ import {
   MovieTitle,
   TicketInformationContainer,
 } from "./TicketListStyle";
-import { TicketList } from "../../types";
+import { UserTickets } from "../../types";
 import CheckboxIcon from "../../assets/checkbox.svg";
 import CheckboxVariantIcon from "../../assets/checkbox-variant.svg";
 
 interface TicketsProps {
-  tickets: TicketList[];
+  tickets: UserTickets[];
   showCheckbox: boolean;
   handleSum?: () => void | undefined;
   handleDecrement?: () => void | undefined;
@@ -50,45 +50,45 @@ function TicketPanel({
         transition: { duration: 2 },
       }}
     >
-      {tickets.map((ticket) => (
+      {tickets?.map((ticket) => (
         <ItemContainer
-          key={ticket.id}
-          id={ticket.id}
+          key={ticket.UserId}
+          id={ticket.UserId}
           $isUsed={ticket.isUsed}
-          $isUnique={ticket.purcheadSeats.length >= 4}
+          $isUnique={ticket.PurchasedSeats.length >= 4}
           role="ingresso"
         >
           <TicketInformationContainer>
-            <MovieTitle>{ticket.title}</MovieTitle>
-            <MovieSubtitle>{ticket.subtitle}</MovieSubtitle>
+            <MovieTitle>{ticket.Title}</MovieTitle>
+            <MovieSubtitle>{ticket.Subtitle}</MovieSubtitle>
           </TicketInformationContainer>
           <TicketInformationContainer>
             <InformationTitle>ID do Pedido</InformationTitle>
-            <MovieSubtitle>{ticket.orderId}</MovieSubtitle>
+            <MovieSubtitle>{ticket.OrderId}</MovieSubtitle>
           </TicketInformationContainer>
           <ItemInnerContainer>
             <TicketInformationContainer>
               <InformationTitle>Horário</InformationTitle>
               <MovieSubtitle>
-                {dayjs(ticket.eventTime).format("HH:mm A")}
+                {dayjs(ticket.EventDateTime.Time).format("HH:mm A")}
               </MovieSubtitle>
             </TicketInformationContainer>
             <TicketInformationContainer>
               <InformationTitle>Data</InformationTitle>
               <MovieSubtitle>
-                {dayjs(ticket.eventDate).format("ddd DD/MM/YYYY")}
+                {dayjs(ticket.EventDateTime.Date).format("ddd DD/MM/YYYY")}
               </MovieSubtitle>
             </TicketInformationContainer>
           </ItemInnerContainer>
           <ItemInnerContainer>
             <TicketInformationContainer>
               <InformationTitle>Custo</InformationTitle>
-              <MovieSubtitle>{`R$ ${ticket.amountPaid}`}</MovieSubtitle>
+              <MovieSubtitle>{`R$ ${ticket.AmountPaid}`}</MovieSubtitle>
             </TicketInformationContainer>
             <TicketInformationContainer>
               <InformationTitle>Assentos</InformationTitle>
               <MovieSubtitle $isUnique={true}>
-                {ticket.purcheadSeats.join(", ")}
+                {ticket.PurchasedSeats.join(", ")}
               </MovieSubtitle>
             </TicketInformationContainer>
           </ItemInnerContainer>
@@ -96,15 +96,15 @@ function TicketPanel({
             <TicketInformationContainer>
               <InformationTitle>Sala</InformationTitle>
               <MovieSubtitle $isUnique={true}>
-                {ticket.roomNumber}
+                {ticket.RoomNumber}
               </MovieSubtitle>
             </TicketInformationContainer>
           </ItemInnerContainer>
           {showCheckbox && !ticket.isUsed ? (
             <IconContainer
               onClick={() => {
-                handleChangeCheckbox(ticket.id);
-                if (!isChecked[ticket.id] && handleSum) {
+                handleChangeCheckbox(ticket.UserId);
+                if (!isChecked[ticket.UserId] && handleSum) {
                   handleSum();
                   return;
                 }
@@ -112,7 +112,9 @@ function TicketPanel({
               }}
             >
               <img
-                src={isChecked[ticket.id] ? CheckboxVariantIcon : CheckboxIcon}
+                src={
+                  isChecked[ticket.UserId] ? CheckboxVariantIcon : CheckboxIcon
+                }
                 alt="icone de checkbox"
               />
             </IconContainer>

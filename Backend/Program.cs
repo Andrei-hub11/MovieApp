@@ -1,5 +1,6 @@
 using Backend.Context;
 using Backend.Data;
+using Backend.Middleware;
 using Backend.Models;
 using Backend.Services;
 using Backend.SignalR.Hubs;
@@ -21,19 +22,28 @@ var builder = WebApplication.CreateBuilder(args);
         options.AddPolicy("AllowSpecificOrigin",
        builder => builder.WithOrigins("http://localhost:5173")
                          .AllowAnyMethod()
-                         .AllowAnyHeader());
+                         .AllowAnyHeader().AllowCredentials());
     });
 
     builder.Services.AddDbContext<AppDBContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    {
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            sqlServerOptions => sqlServerOptions.EnableRetryOnFailure());
+    });
     builder.Services.AddDbContext<AccountDBContext>(options =>
-           options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    {
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            sqlServerOptions => sqlServerOptions.EnableRetryOnFailure());
+    });
+
 
     builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
      .AddEntityFrameworkStores<AccountDBContext>()
      .AddDefaultTokenProviders();
 
- 
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddTransient<CinemaService>();
     builder.Services.AddTransient<AccountService>();
     builder.Services.AddTransient<TokenService>();
@@ -69,6 +79,7 @@ var builder = WebApplication.CreateBuilder(args);
             ValidateAudience = false
         };
 
+      
 
     });
 
@@ -85,6 +96,8 @@ var builder = WebApplication.CreateBuilder(args);
         options.User.RequireUniqueEmail = true;
     });
 
+
+
     builder.Services.AddAuthorization(options =>
     {
         options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
@@ -97,7 +110,8 @@ var builder = WebApplication.CreateBuilder(args);
 }
 
 var app = builder.Build();
-await DeleteRecord.DeleteRecordAsync(app.Configuration);
+MigrateData.CreateInitialMigrate(app.Services);
+ await DeleteRecord.DeleteRecordAsync(app.Configuration);
 await SeedData.CreateInitialsRolesAsync(app.Services);
 await RoomData.CreateRoomsForDateRangeAsync(app.Services);
 
@@ -127,11 +141,12 @@ app.Use(async (context, next) =>
 });
 
 app.UseCors("AllowSpecificOrigin");
+app.UseMiddleware<WebSocketsMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<NotificationHub>("/notificationHub");
 app.UseStaticFiles();
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();

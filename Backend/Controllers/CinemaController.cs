@@ -46,9 +46,28 @@ public class CinemaController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "UserOrAdmin")]
+    [HttpGet("rooms-events-coming")]
+    public async Task<IActionResult> GetUpcomingRoomEvents()
+    {
+        try
+        {
+            var result = await _cinemaService.GetUpcomingRoomEventsAsync();
+            return Ok(new { Rooms = result });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                Message = "Ocorreu um erro durante a busca das salas.",
+                Error = ex.Message
+            });
+        }
+    }
+
 
     [Authorize(Policy = "UserOrAdmin")]
-    [HttpGet("get-rooms-by-title")]
+    [HttpGet("rooms-by-title")]
     public async Task<IActionResult> GetRoomByMovieTitle([FromQuery] string movieTitle)
     {
         if (string.IsNullOrEmpty(movieTitle))
@@ -81,6 +100,25 @@ public class CinemaController : ControllerBase
         {
             var result = await _cinemaService.GetGiftCardsAsync();
             return Ok(new { GiftCards = result });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                Message = "Ocorreu um erro durante a busca das salas.",
+                Error = ex.Message
+            });
+        }
+    }
+
+    [Authorize(Policy = "UserOrAdmin")]
+    [HttpGet("check-giftcard/{giftCode}")]
+    public async Task<IActionResult> GetCheckGiftCard(Guid giftCode)
+    {
+        try
+        {
+            var result = await _cinemaService.GetCheckGiftCardAsync(giftCode);
+            return Ok(result);
         }
         catch (Exception ex)
         {
@@ -170,13 +208,17 @@ public class CinemaController : ControllerBase
             var ticketDTO = _mapper.Map<TicketDTO>(result.Value);
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+
 
             if (NotificationHub.TryGetConnectionId(userId, out string connectionId))
             {
-                await _hubContext.Clients.Client(connectionId).SendAsync("ReceberNotificacao", "Sua compra foi confirmada!");
+                await _hubContext.Clients.Client(connectionId).SendAsync("OrderNotification", 
+                    $"{userName}, seu ingresso foi gerado com sucesso. ID de sua compra: {ticketDTO.OrderId}. Obrigado pela preferência");
             }
 
-            return Ok(new { Message = "Ticket criado com sucesso", Ticket = ticketDTO });
+            return Ok(new {
+                Ticket = ticketDTO });
         }
         catch (Exception ex)
         {

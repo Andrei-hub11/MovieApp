@@ -1,6 +1,6 @@
 import "dayjs/locale/pt-br";
 
-import { Tickets } from "../../constants/constants";
+import { useTypedSelector } from "../../app/store";
 import { IndicatorProps } from "../../types";
 import indicatorIcon from "../../assets/octicon_arrow-right-24.svg";
 
@@ -15,20 +15,18 @@ interface ticketsProps {
 }
 
 function TicketsPage({ isUnique }: ticketsProps) {
+  const { User } = useTypedSelector((state) => state.account);
+
   const indicatorProps: IndicatorProps = {
     sectionName: "Meus ingressos",
     src: indicatorIcon,
     alt: "icone da seção de perfil",
   };
 
-  const tickets = {
-    Tickets,
-  };
-
   return (
     <TicketsContainer>
       <Indicator indicator={indicatorProps} $isUnique={isUnique} />
-      <TicketPanel tickets={tickets.Tickets} showCheckbox={false} />
+      <TicketPanel tickets={User.Tickets} showCheckbox={false} />
     </TicketsContainer>
   );
 }

@@ -1,17 +1,11 @@
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import {
-  ManagerReset,
-  getRooms,
-  getRoomsByMovieTitle,
-} from "../../utils/cinema/sliceCinema";
-import { images, movies, moviesComingSoon } from "../../constants/constants";
-import { useAppDispatch, useTypedSelector } from "../../app/store";
-import { BtnList, IconProps, InputsProps, SliderSettings } from "../../types";
+import { movies, moviesComingSoon } from "../../constants/constants";
+
+import { IconProps, InputsProps, SliderSettings } from "../../types";
 
 import {
   BtnsContainer,
@@ -35,35 +29,26 @@ import {
   SliderBtn,
   SliderContainer,
   SliderImg,
-} from "./MainStyles";
+} from "./HomeStyles";
 import { IconContainer } from "../../components/Navbar/NavbarStyles";
 import Icon from "../../components/Icon/Icon";
 import Input from "../../components/Input/Input";
 import Button from "../../components/Button/Button";
 
 import SearchIcon from "../../assets/ic_round-search.svg";
+import useHome from "./useHome";
 
-function Main() {
-  const navigate = useNavigate();
-  const { Rooms, isManagerSuccess, isManagerError } = useTypedSelector(
-    (state) => state.cinema
-  );
-  const dispatch = useAppDispatch();
+function Home() {
+  const { btnList, Rooms, handleSelectedMovie } = useHome();
+
   const [width, setWidth] = useState<number>(0);
   const carousel = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    dispatch(getRooms());
     if (carousel.current) {
       setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
     }
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (isManagerSuccess) {
-      dispatch(ManagerReset());
-    }
-  }, [isManagerError, isManagerSuccess, dispatch]);
+  }, []);
 
   const settings: SliderSettings = {
     dots: true,
@@ -89,26 +74,6 @@ function Main() {
     onChange: undefined,
   };
 
-  const btnlist: BtnList[] = [
-    {
-      btn: { $primary: true, onClick: undefined },
-      btn_text: "Ação",
-    },
-    {
-      btn: { $primary: false, onClick: undefined },
-      btn_text: "Ficção",
-    },
-    {
-      btn: { $primary: false, onClick: undefined },
-      btn_text: "Aventura",
-    },
-  ];
-
-  const handleSelectedMovie = (movieTitle: string) => {
-    dispatch(getRoomsByMovieTitle(movieTitle));
-    navigate("/salas");
-  };
-
   return (
     <CentralSection>
       <Container>
@@ -123,7 +88,7 @@ function Main() {
             <p>Categorias</p>
           </CategoryContainerTitle>
           <BtnsContainer>
-            {btnlist.map((btn) => (
+            {btnList?.map((btn) => (
               <Button key={btn.btn_text} btn={btn.btn}>
                 {btn.btn_text}
               </Button>
@@ -140,9 +105,18 @@ function Main() {
               drag="x"
               dragConstraints={{ right: 0, left: -width }}
             >
-              {images.map((image) => (
-                <CarouselItem key={image}>
-                  <CarouselImage src={image} alt="imagem de filme" />
+              {Rooms?.map((movie) => (
+                <CarouselItem
+                  key={movie.Id}
+                  onClick={() => handleSelectedMovie(movie.MovieTitle)}
+                >
+                  <CarouselImage
+                    src={
+                      import.meta.env.VITE_MOVIE_APP_API_URL +
+                      movie.MovieImagePath
+                    }
+                    alt="imagem de filme"
+                  />
                 </CarouselItem>
               ))}
             </PostersCarouselInner>
@@ -197,4 +171,4 @@ function Main() {
   );
 }
 
-export default Main;
+export default Home;

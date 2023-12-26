@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 import { InputsProps, BtnList, IconProps, IndicatorProps } from "../../types";
 
 import {
@@ -16,6 +18,7 @@ import Input from "../Input/Input";
 import Anakin from "../../assets/profile-image.jpg";
 import SearchIcon from "../../assets/ic_round-search.svg";
 import Indicator from "../SectionIndicator/Indicator";
+import { useTypedSelector } from "../../app/store";
 
 interface navProps {
   isUnique?: boolean;
@@ -23,20 +26,27 @@ interface navProps {
 }
 
 function Navbar({ isUnique, indicatorProps }: navProps) {
-  const btnlist: BtnList[] = [
-    {
-      btn: { $primary: true, onClick: undefined },
-      btn_text: "Ação",
-    },
-    {
-      btn: { $primary: false, onClick: undefined },
-      btn_text: "Ficção",
-    },
-    {
-      btn: { $primary: false, onClick: undefined },
-      btn_text: "Aventura",
-    },
-  ];
+  const { Rooms } = useTypedSelector((state) => state.cinema);
+
+  const [categoryList, setCategoryist] = useState<[] | string[]>([]);
+
+  useEffect(() => {
+    if (Rooms) {
+      setCategoryist(
+        Array.from(new Set(Rooms.map((room) => room.MovieCategory)))
+      );
+    }
+  }, [Rooms]);
+
+  const btnList: BtnList[] = categoryList?.map((category) => {
+    return {
+      btn: {
+        $primary: true,
+        onClick: undefined,
+      },
+      btn_text: category,
+    };
+  });
 
   const icon: IconProps = {
     $primary: true,
@@ -57,7 +67,7 @@ function Navbar({ isUnique, indicatorProps }: navProps) {
       </ProfileImageContainer>
       <Navegation>
         <BtnContainer $isUnique={isUnique}>
-          {btnlist.map((btn) => (
+          {btnList?.map((btn) => (
             <Button key={btn.btn_text} btn={btn.btn}>
               {btn.btn_text}
             </Button>

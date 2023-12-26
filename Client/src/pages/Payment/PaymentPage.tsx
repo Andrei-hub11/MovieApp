@@ -1,10 +1,9 @@
-import { useState } from "react";
-
 import {
   BtnContainer,
   Divider,
   FormControl,
   FormInput,
+  FormMsg,
   IconContainer,
   InformationContainer,
   InformationText,
@@ -27,32 +26,28 @@ import Icon from "../../components/Icon/Icon";
 
 import returnIcon from "../../assets/solar_arrow-left-linear.svg";
 import bigReturnIcon from "../../assets/solar_arrow-left-linear-big.svg";
-import useRedirect from "../../utils/customHook/useRedirect/useRedirect";
-import { useTypedSelector } from "../../app/store";
-import { toast } from "react-toastify";
+import usePayment from "./usePayment";
 
 function PaymentPage() {
-  const { cartItems, isProcessing, orderId, subtotal, total } =
-    useTypedSelector((state) => state.purchase);
-
-  const [checked, setChecked] = useState<string>("code");
-  const { redirectTo } = useRedirect();
+  const {
+    checked,
+    giftCodeIsValid,
+    handleChecked,
+    handleSubmitPayment,
+    handleChangeGiftCode,
+    redirectTo,
+    cartItems,
+    isProcessing,
+    subtotal,
+    discount,
+    total,
+    orderId,
+  } = usePayment();
 
   const iconProps: IconProps = {
     src: returnIcon,
     srcset: `${returnIcon} 400w, ${bigReturnIcon} 600w`,
     alt: "ícone para retornar",
-  };
-
-  const handleChecked: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (e.target.name === "card") {
-      toast.error(
-        "O pagamento com o cartão de credito está indisponivel no momento"
-      );
-      return;
-    }
-
-    setChecked(e.target.value);
   };
 
   return (
@@ -97,7 +92,7 @@ function PaymentPage() {
         </InnerInformationContainer>
         <InnerInformationContainer $hasMargin="3.4rem">
           <InformationText>Desconto aplicado</InformationText>
-          <InformationText>R$ 10</InformationText>
+          <InformationText>{discount}</InformationText>
         </InnerInformationContainer>
         <Divider />
         <InnerInformationContainer>
@@ -136,11 +131,16 @@ function PaymentPage() {
             placeholder=""
             autoComplete="off"
             aria-autocomplete="none"
+            $isValid={giftCodeIsValid}
+            onChange={handleChangeGiftCode}
           />
           <LabelForm htmlFor="name">Codigo</LabelForm>
+          <FormMsg $isValid={giftCodeIsValid}>
+            O gift não tem um código válido, ou já foi usado.
+          </FormMsg>
         </FormControl>
         <BtnContainer $hasMargin="3rem">
-          <PaymentBtn $primary $isUnique>
+          <PaymentBtn $primary $isUnique onClick={handleSubmitPayment}>
             Confirmar
           </PaymentBtn>
         </BtnContainer>

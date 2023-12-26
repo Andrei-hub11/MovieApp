@@ -1,9 +1,5 @@
 import styled from "styled-components";
-import {
-  AppearanceGroupProps,
-  AppearanceProps,
-  InputsProps,
-} from "../../types";
+import { AppearanceGroupProps, AppearanceProps } from "../../types";
 
 export const PaymentContainer = styled.main`
   grid-area: main;
@@ -216,15 +212,19 @@ export const FormControl = styled.div<AppearanceGroupProps>`
   }
 `;
 
-export const FormInput = styled.input<InputsProps>`
+export const FormInput = styled.input<AppearanceProps>`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     position: relative;
     font-size: 1.5rem;
     font-weight: 400;
     width: 30rem;
     height: 3.5rem;
-    border: ${({ $isError, theme: { colors } }) =>
-      $isError ? ".2rem solid #ff0000" : `0.2rem solid ${colors.primary}`};
+    border: ${({ $isValid, theme: { colors } }) =>
+      $isValid
+        ? `.2rem solid ${colors.primary}`
+        : $isValid === false
+        ? "0.2rem solid #ff0000"
+        : `.2rem solid ${colors.primary}`};
     border-radius: 0.5rem;
     outline: 0;
     background-color: ${({ theme: { colors } }) => colors.bg};
@@ -307,6 +307,22 @@ export const LabelForm = styled.label`
   }
 `;
 
+export const FormMsg = styled.small<AppearanceProps>`
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+    display: ${({ $isValid }) =>
+      $isValid == true ? "none" : $isValid === "" ? "none" : "flex"};
+    position: absolute;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #ff0000;
+    bottom: -0.8rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    font-size: 1.4rem;
+  }
+`;
+
 export const PaymentBtn = styled.a<AppearanceProps>`
   text-align: center;
   font-size: 1.6rem;
@@ -345,5 +361,15 @@ export const PaymentBtn = styled.a<AppearanceProps>`
   @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
     font-size: 1.8rem;
     padding: 0.4rem 2rem;
+
+    &:hover {
+      background: ${({ theme: { colors }, $primary }) =>
+        $primary ? colors.secondary_btn : "#000"};
+      border: ${({ theme: { colors }, $primary }) =>
+        $primary ? `.2rem solid ${colors.primary_btn}` : ""};
+      color: ${({ theme: { colors }, $primary }) =>
+        $primary ? "#000" : colors.secondary_btn};
+      transition: 0.3s ease-out;
+    }
   }
 `;

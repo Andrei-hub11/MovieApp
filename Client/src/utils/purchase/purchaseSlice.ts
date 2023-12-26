@@ -1,12 +1,15 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Seat } from "../../types";
+import { Seat, Room } from "../../types";
 import purchaseService from "./purchaseService";
 
 interface PurchaseState {
   cartItems: Seat[] | [];
-  subtotal: number;
-  total: number;
+  currentRoom: Room | "";
   orderId: string;
+  isUsedGift: boolean;
+  subtotal: number;
+  discount: number;
+  total: number;
   isProcessing: boolean;
   isPurchaseLoading: boolean;
   isPurchaseSuccess: boolean;
@@ -16,9 +19,12 @@ interface PurchaseState {
 
 const initialState: PurchaseState = {
   cartItems: [],
-  subtotal: 0,
-  total: 0,
+  currentRoom: "",
   orderId: "",
+  isUsedGift: false,
+  subtotal: 0,
+  discount: 0,
+  total: 0,
   isPurchaseLoading: false,
   isPurchaseSuccess: false,
   isPurchaseError: false,
@@ -39,6 +45,17 @@ const purchaseSlice = createSlice({
   name: "purchase",
   initialState,
   reducers: {
+    setCurrentRoom(state, action: PayloadAction<Room>) {
+      state.currentRoom = action.payload;
+    },
+    setIsUsedGift(state, action: PayloadAction<boolean>) {
+      state.isUsedGift = action.payload;
+
+      if (state.isUsedGift) {
+        state.total = state.subtotal - state.subtotal;
+        state.discount = state.subtotal;
+      }
+    },
     addToCart(state, action: PayloadAction<Seat>) {
       const { Id } = action.payload;
       const seatExist = state.cartItems.find((seat) => seat.Id === Id);
@@ -70,6 +87,9 @@ const purchaseSlice = createSlice({
       state.isProcessing = false;
       state.cartItems = [];
       state.orderId = "";
+      state.subtotal = 0;
+      state.discount = 0;
+      state.total = 0;
     },
     purchaseFailed(state, action: PayloadAction<string>) {
       state.isProcessing = false;
@@ -94,9 +114,10 @@ const purchaseSlice = createSlice({
 });
 
 export const {
+  setIsUsedGift,
+  setCurrentRoom,
   addToCart,
   removeToCart,
-
   startPurchaseProcess,
   resetPurchase,
   purchaseFailed,

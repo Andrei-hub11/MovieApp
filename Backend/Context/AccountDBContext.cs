@@ -32,6 +32,9 @@ public class AccountDBContext: IdentityDbContext<ApplicationUser>
                 .IsRequired()
                 .HasMaxLength(30);
 
+            entity.Property(ticket => ticket.OrderId).IsRequired().HasMaxLength(14);
+            entity.Property(ticket => ticket.RoomNumber).IsRequired();
+
             entity.OwnsOne(ticket => ticket.EventDateTime, eventDateTime =>
             {
                 eventDateTime.Property(ed => ed.Date).IsRequired().HasColumnName("EventDate");

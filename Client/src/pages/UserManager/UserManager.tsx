@@ -1,7 +1,7 @@
 import { useState } from "react";
 
+import { useTypedSelector } from "../../app/store";
 import { IconProps, IndicatorProps, InputsProps } from "../../types";
-import { Tickets } from "../../constants/constants";
 
 import {
   ArrowIcon,
@@ -34,6 +34,8 @@ interface userProps {
   isUnique: boolean;
 }
 function UserManager({ isUnique }: userProps) {
+  const { User } = useTypedSelector((state) => state.account);
+
   const [showTickets, setShowTickets] = useState<boolean>(false);
   const [ticketsNumber, setTicketsNumber] = useState<number>(0);
 
@@ -128,7 +130,7 @@ function UserManager({ isUnique }: userProps) {
         </UserContainer>
       ) : (
         <TicketPanel
-          tickets={Tickets}
+          tickets={User.Tickets}
           showCheckbox={true}
           handleSum={handleSumTicketsNumber}
           handleDecrement={handleDecrementTicketsNumber}

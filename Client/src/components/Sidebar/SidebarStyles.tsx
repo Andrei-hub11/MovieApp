@@ -50,7 +50,7 @@ export const SideLInk = styled.li<AppearanceProps>`
   font-family: ${({ theme: { fonts } }) => fonts[0]};
   gap: 1rem;
   padding: 0.3rem 0.5rem;
-  color: #fff;
+  color: ${({ $isUnique }) => ($isUnique ? "#ff0000" : "#fff")};
   cursor: pointer;
 
   &::after {
