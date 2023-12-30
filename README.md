@@ -205,7 +205,7 @@ Testando o Aplicativo de Cinema:
 
 ```
 {
-"Message": "Ocorreu um erro durante ao tentar recuperar o usuário.",
+"Message": "Ocorreu um erro ao tentar recuperar o usuário.",
 "Error": "Mensagem de erro específica"
 }
 ```
