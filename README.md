@@ -1,5 +1,9 @@
 ![Screenshot 2023-12-30 at 06-19-11 MovieApp React TS](https://github.com/Andrei-hub11/MovieApp/assets/83555334/06d35800-003d-4c2b-bbac-980f12a87ad6)
 
+![Screenshot 2023-12-30 at 06-33-58 MovieApp React TS](https://github.com/Andrei-hub11/MovieApp/assets/83555334/aa633fb2-d933-4664-8e32-4852fa28e3fa)
+
+![Screenshot 2023-12-30 at 06-34-22 MovieApp React TS](https://github.com/Andrei-hub11/MovieApp/assets/83555334/7f617035-9793-450a-bc96-7202bede52d2)
+
 # Principais Recursos
 
 - Rotas Protegidas : Tanto no backend quanto no frontend, garantindo a segurança e restrição de acesso a áreas específicas do aplicativo.
