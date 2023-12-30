@@ -30,7 +30,7 @@ Testando o Aplicativo de Cinema:
 - Antes de Executar o Comando `docker-compose up -d`:
   Antes de executar o comando para iniciar os contêineres, é necessário seguir as instruções para obter um certificado válido. Você pode gerar um certificado seguindo as orientações fornecidas [aqui](https://learn.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-6.0#windows-using-linux-containers).
   Após gerar o certificado, substitua a senha utilizada em `ASPNETCORE_Kestrel__Certificates__Default__Password` no arquivo docker-compose.yml pelo certificado gerado.
-  Por favor, se ao rodar o container, o backend não for iniciado corretamente, faça `docker-compose down` e depois `docker-compose up -d` novamenete, pois pode ser que o banco de dados não tenha ficado pronto há tempo na inicialização, apesar da configuração.
+  Por favor, se ao rodar o container, o backend não for iniciado corretamente, faça `docker-compose down` e depois `docker-compose up -d` novamente, pois pode ser que o banco de dados não tenha ficado pronto há tempo na inicialização, apesar da configuração.
 
 - Registrando um Usuário:
   Abra seu navegador e acesse **http://localhost:5173/register**. Você será direcionado para a página de registro do aplicativo.
