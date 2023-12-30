@@ -17,6 +17,7 @@ using Moq;
 using Microsoft.Extensions.Configuration;
 using CinemaAppUnitTest.Utils;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using ErrorOr;
 
 namespace CinemaAppUnitTest.Tests2;
 
@@ -292,6 +293,49 @@ public class CinemaAccountTests
         }
     }
 
+    [Fact]
+    public async Task GetUsersByEmail_ReturnsOkResultWhenUserFound()
+    {
+        var testuser = new UserRegisterModel
+        {
+            UserName = "test2user",
+            Email = "email_valido@example.com",
+            Password = "16147538##Aa",
+            Role = "Admin"
+        };
 
+        var controller = GetTestAccountControllerWithAuthorize();
+        await controller.Register(testuser);
+        string email = "email_valido@example.com"; 
 
+        // Act
+        var result = await controller.GetUserByEmail(email);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var userResponse = TestResultHelpers.GetPropertyValue<UserDTO>(okResult.Value, "User");
+
+        Assert.NotNull(userResponse);
+        Assert.Equal(email, userResponse.Email);
+    }
+
+    [Fact]
+    public async Task GetUsersByEmail_ReturnsBadRequestWhenServiceFails()
+    {
+     
+        var controller = GetTestAccountControllerWithAuthorize();
+        string email = "email_invalido@example.com";
+       
+        var result = await controller.GetUserByEmail(email);
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        var errorsResponse = TestResultHelpers.GetPropertyValue<List<string>>(badRequestResult.Value, "Errors");
+
+        foreach (var error in errorsResponse)
+        {
+            Assert.NotNull(error);
+            Assert.NotEmpty(error);
+        }
+
+        Assert.Equal(errorsResponse[0], $"O usuário com o email {email} não foi encontrado");
+    }
 }

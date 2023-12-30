@@ -31,7 +31,8 @@ public class AccountService : IAccount
     public async Task<ErrorOr<UserDTO>> GetUserByIdAsync(string userId)
     {
         List<Error> errors = new();
-        var user = await _userManager.Users.FirstOrDefaultAsync((user) => user.Id == userId);
+        var user = await _userManager.Users.Include(user => user.Tickets)
+            .FirstOrDefaultAsync((user) => user.Id == userId);
 
         if (user == null)
         {
@@ -68,25 +69,29 @@ public class AccountService : IAccount
 
     public async Task<IdentityResult> CreateAsync(ApplicationUser user, string password)
     {
-        try
-        {
-            var result = await _userManager.CreateAsync(user, password);
-
-            return result;
-        }
-        catch (Exception ex)
-        {
-
-            throw new Exception(ex.Message);
-
-
-        }
+            return await _userManager.CreateAsync(user, password);
     }
 
 
-    public async Task<ApplicationUser> FindByEmailAsync(string email)
+    public async Task<ErrorOr<ApplicationUser>> FindByEmailAsync(string email)
     {
-        return await _userManager.FindByEmailAsync(email);
+            List<Error> errors = new();
+
+
+            var user = await _userManager.Users.Include(user => user.Tickets).
+            FirstOrDefaultAsync(user => user.Email == email);
+
+        if (user == null)
+        {
+            errors.Add(
+            Error.Validation(
+                description: $"O usuário com o email {email} não foi encontrado"
+            )
+        );
+            return errors;
+        }
+
+        return user;
     }
 
     public async Task<IList<string>> GetRolesAsync(ApplicationUser user)

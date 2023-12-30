@@ -4,6 +4,7 @@ using Backend.Models;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Reflection.Emit;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Reflection.Metadata;
 
 namespace Backend.Context;
 
@@ -18,6 +19,7 @@ public class AccountDBContext: IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+       
 
         // Configurar a relação entre Ticket e User
         builder.Entity<TicketModel>()
@@ -28,7 +30,12 @@ public class AccountDBContext: IdentityDbContext<ApplicationUser>
 
         builder.Entity<TicketModel>(entity =>
         {
-            entity.Property(ticket => ticket.Title)
+            entity.Property(ticket => ticket.Id)
+              .HasDefaultValueSql("NEWID()");
+            entity.Property(ticket => ticket.MovieTitle)
+               .IsRequired()
+               .HasMaxLength(30);
+            entity.Property(ticket => ticket.MovieTitle)
                 .IsRequired()
                 .HasMaxLength(30);
 
@@ -60,8 +67,13 @@ public class AccountDBContext: IdentityDbContext<ApplicationUser>
 
             entity.Property(ticket => ticket.CreatedAt)
             .HasDefaultValueSql("GETDATE()");
+            entity.Property(ticket => ticket.UpdatedAt)
+    .HasDefaultValueSql("GETDATE()")
+    .ValueGeneratedOnUpdate();
+           entity
+        .ToTable(Tickets => Tickets.HasTrigger("Ticket_UPDATE"));
 
-          entity.ToTable(Tickets => Tickets.HasCheckConstraint("CK_EventDateTime_InFuture",
+            entity.ToTable(Tickets => Tickets.HasCheckConstraint("CK_EventDateTime_InFuture",
              "EventDate > GETDATE()"));
         });
        

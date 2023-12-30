@@ -16,7 +16,6 @@ import {
   ProfileImage,
   ProfileInformationContainer,
   ProfileInput,
-  ProfileText,
 } from "./ProfileStyles";
 
 import Indicator from "../../components/SectionIndicator/Indicator";
@@ -28,6 +27,7 @@ import editIcon from "../../assets/ic_sharp-edit.svg";
 import saveIcon from "../../assets/mdi_success-bold.svg";
 import closeIcon from "../../assets/ic_outline-close.svg";
 import imageInputIcon from "../../assets/mdi_file-image-outline.svg";
+import defaultProfilePicture from "../../assets/imagem de perfil default.png";
 
 import useProfile from "./useProfile";
 
@@ -89,7 +89,10 @@ function Profile({ isUnique }: profileProps) {
           {User.ProfileImagePath && isEditable ? (
             <ProfileImage
               src={
-                import.meta.env.VITE_MOVIE_APP_API_URL + User.ProfileImagePath
+                User.ProfileImagePath
+                  ? import.meta.env.VITE_MOVIE_APP_API_URL +
+                    User.ProfileImagePath
+                  : defaultProfilePicture
               }
             />
           ) : previewImage ? (
@@ -114,8 +117,6 @@ function Profile({ isUnique }: profileProps) {
           )}
         </ContainerInner>
         <ContainerInner>
-          <ProfileText>Nome</ProfileText>
-
           <ProfileInput
             role="textbox"
             $isUnique={isEditable}
@@ -128,8 +129,8 @@ function Profile({ isUnique }: profileProps) {
           />
         </ContainerInner>
         <ContainerInner>
-          <ProfileText>E-mail</ProfileText>
           <ProfileInput
+            type="text"
             $isUnique={isEditable}
             value={userData.Email}
             disabled={isEditable}

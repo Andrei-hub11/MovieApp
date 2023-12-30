@@ -32,6 +32,27 @@ export const NavContainer = styled(motion.div)<AppearanceProps>`
   }
 `;
 
+export const Input = styled.input<AppearanceProps>`
+  width: 33.2rem;
+  height: 3.4rem;
+  border: ${({ $primary }) =>
+    $primary ? "0.2rem solid #fff" : "0.2rem solid #ff0000"};
+  border-radius: 2rem;
+  background: ${({ theme: { colors } }) => colors.bg};
+  color: ${({ theme: { colors } }) => colors.text};
+  padding-left: 1.5rem;
+  caret-color: #fff;
+  outline: none;
+
+  &::placeholder {
+    color: ${({ theme: { colors } }) => colors.text};
+  }
+
+  @media (max-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+    width: 30rem;
+  }
+`;
+
 export const IconContainer = styled.div<AppearanceProps>`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     display: flex;
@@ -94,16 +115,26 @@ export const UserImageContainer = styled.div`
 
   @media (min-width: ${(props) => props.theme.breakPoints.tabletLandscapeUp}) {
     width: 10.5rem;
-    height: 10.3rem;
+    height: 10.5rem;
   }
 `;
 
 export const UserImage = styled.img`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     object-fit: cover;
-    height: auto;
-    width: 100%;
+    height: 7.5rem;
+    width: 7.5rem;
     border-radius: 50%;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    height: 8.5rem;
+    width: 8.5rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletLandscapeUp}) {
+    width: 10.5rem;
+    height: 10.5rem;
   }
 `;
 

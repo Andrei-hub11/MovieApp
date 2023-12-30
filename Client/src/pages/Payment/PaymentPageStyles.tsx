@@ -364,11 +364,11 @@ export const PaymentBtn = styled.a<AppearanceProps>`
 
     &:hover {
       background: ${({ theme: { colors }, $primary }) =>
-        $primary ? colors.secondary_btn : "#000"};
+        $primary ? colors.secondary_bg : "#000"};
       border: ${({ theme: { colors }, $primary }) =>
         $primary ? `.2rem solid ${colors.primary_btn}` : ""};
       color: ${({ theme: { colors }, $primary }) =>
-        $primary ? "#000" : colors.secondary_btn};
+        $primary ? colors.secondary_btn : colors.secondary_btn};
       transition: 0.3s ease-out;
     }
   }

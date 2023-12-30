@@ -23,7 +23,9 @@ export interface IconProps {
 
 export interface ButtonProps {
   $primary: boolean;
-  onClick?: () => void | undefined;
+  onClick?: (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => void | undefined;
   $isUnique?: boolean;
 }
 
@@ -69,7 +71,7 @@ export interface IndicatorProps {
 export interface InputsProps {
   placeholder?: string;
   $isError?: string;
-  onChange?: () => void | undefined;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void | undefined;
 }
 
 export interface BtnList {
@@ -95,8 +97,8 @@ export interface EventDateTime {
 }
 
 export interface TicketData {
-  Title: string;
-  Subtitle?: string;
+  MovieTitle: string;
+  MovieSubtitle?: string;
   OrderId: string;
   AmountPaid: number;
   EventDateTime: EventDateTime;
@@ -106,7 +108,10 @@ export interface TicketData {
 }
 
 export interface UserTickets extends TicketData {
-  isUsed: boolean;
+  Id: string;
+  IsUsed: boolean;
+  CreatedAt: Date;
+  UpdatedAt: Date | null;
 }
 
 export interface AppearanceProps {
@@ -228,4 +233,5 @@ export interface IconsList {
 export interface ErrorResponse {
   Message: string;
   Error: [] | "";
+  Errors: [] | "";
 }

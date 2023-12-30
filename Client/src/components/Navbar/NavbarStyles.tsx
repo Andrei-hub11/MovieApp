@@ -29,10 +29,34 @@ export const Header = styled.header<AppearanceProps>`
 export const ProfileImageContainer = styled.div<AppearanceProps>`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     margin-left: auto;
-    height: 6rem;
-    width: 6rem;
+    min-height: 6rem;
+    min-width: 6rem;
     border-radius: 50%;
     display: ${({ $isUnique }) => ($isUnique ? "none" : "block")};
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    margin-right: 2rem;
+    min-height: 13.4rem;
+    min-width: 13.4rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletLandscapeUp}) {
+    min-height: 17.2rem;
+    min-width: 17.2rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
+    display: none;
+  }
+`;
+
+export const NavbarProfileImage = styled.img`
+  @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
+    height: 6rem;
+    width: 6rem;
+    object-fit: cover;
+    border-radius: 50%;
   }
 
   @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
@@ -44,17 +68,6 @@ export const ProfileImageContainer = styled.div<AppearanceProps>`
     height: 17.2rem;
     width: 17.2rem;
   }
-
-  @media (min-width: ${(props) => props.theme.breakPoints.desktopUp}) {
-    display: none;
-  }
-`;
-
-export const NavbarProfileImage = styled.img`
-  object-fit: cover;
-  width: 100%;
-  height: auto;
-  border-radius: 50%;
 `;
 
 export const Navegation = styled.nav`

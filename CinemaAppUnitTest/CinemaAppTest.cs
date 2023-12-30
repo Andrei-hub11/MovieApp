@@ -388,11 +388,17 @@ public class CinemaControllerTests
         var okResult = result as OkObjectResult;
         var newRoom = TestResultHelpers.GetPropertyValue<RoomModel>(okResult.Value, "Room");
 
-        string roomNumberExpected = "A-7";
+        string roomNumberExpected = "A07";
+        string movieTitleExpected = "Resident Evil";
+        string movieSubtitleExpected = "4";
+        string movieCategoryExpected = "Ação";
         DateTime expectedDate = new DateTime(2026, 3, 1, 0, 0, 0);
         var updateRoom = new RoomModel()
         {
             RoomNumber = roomNumberExpected,
+            MovieTitle = movieTitleExpected,
+            MovieSubtitle = movieSubtitleExpected,
+            MovieCategory = movieCategoryExpected,
             EventDateTime = expectedDate,
         };
 
@@ -409,8 +415,66 @@ public class CinemaControllerTests
         Assert.NotNull(message);
         Assert.NotNull(room);
         Assert.Equal("A sala foi atualizada com sucesso", message);
-        Assert.Equal(expectedDate, room.EventDateTime);
         Assert.Equal(roomNumberExpected, room.RoomNumber);
+        Assert.Equal(movieTitleExpected, room.MovieTitle);
+        Assert.Equal(movieSubtitleExpected, room.MovieSubtitle);
+        Assert.Equal(movieCategoryExpected, room.MovieCategory);
+        Assert.Equal(expectedDate, room.EventDateTime);
+    }
+
+    [Fact]
+    public async Task UpdateGift_ReturnsOkResultWhenValidationPassesForAuthorizeAdmin()
+    {
+        var controller = GetTestCinemaController();
+
+        await controller.CreateGiftCard();
+        var result = await controller.CreateGiftCard();
+
+        var okResult = result as OkObjectResult;
+
+        Assert.NotNull(okResult);
+
+        var gift = TestResultHelpers.GetPropertyValue<GiftCardModel>(okResult.Value, "GiftCard");
+
+        var checkResult = await controller.UpdateGift(gift.GiftCodigo);
+
+        var okCheckResult = checkResult as OkObjectResult;
+
+        Assert.NotNull(okCheckResult);
+
+        var isCheck = (bool)okCheckResult.Value;
+
+        Assert.True(isCheck);
+    }
+
+    [Fact]
+    public async Task UpdateGift_ReturnsBadResultWhenValidationFailsForAuthorizeAdmin()
+    {
+        var controller = GetTestCinemaController();
+
+
+        var result = await controller.CreateGiftCard();
+
+        var okResult = result as OkObjectResult;
+
+        Assert.NotNull(okResult);
+
+        var gift = TestResultHelpers.GetPropertyValue<GiftCardModel>(okResult.Value, "GiftCard");
+
+        await controller.UpdateGift(gift.GiftCodigo);
+        var checkResult = await controller.UpdateGift(gift.GiftCodigo);
+
+        var badCheckResult = checkResult as BadRequestObjectResult;
+
+        Assert.NotNull(badCheckResult);
+
+        var errorsList = TestResultHelpers.GetPropertyValue<List<string>>(badCheckResult.Value, "Errors");
+
+        foreach (var error in errorsList)
+        {
+            Assert.NotNull(error);
+            Assert.NotEmpty(error);
+        }
     }
 
     [Fact]
@@ -575,7 +639,7 @@ public class CinemaControllerTests
              .GetValue(okResult.Value);
 
         var validTicket = new TicketDTO(
-             Title: "Test",
+             MovieTitle: "Test",
              OrderId: "#PlF519pkyx3hD",
              RoomNumber: "5",
      AmountPaid: 0,
@@ -590,7 +654,7 @@ public class CinemaControllerTests
 
 
         var ticketResult = await cinemaController.CreateTicket(rooms[6].Id, validTicket);
-        Console.WriteLine("test");
+    
         Assert.IsType<OkObjectResult>(ticketResult);
         var okTicketResult = ticketResult as OkObjectResult;
         Assert.NotNull(okTicketResult);
@@ -604,6 +668,7 @@ public class CinemaControllerTests
         Assert.IsType<TimeSpan>(ticket.EventDateTime.Time);
         Assert.Equal(4, ticket.AmountPaid);
         Assert.Equal("A-1", ticket.PurchasedSeats[0]);
+        Assert.False(ticket.IsUsed);
     }
 
     [Fact]
@@ -648,7 +713,7 @@ public class CinemaControllerTests
              .GetValue(okResult.Value);
 
         var validTicket = new TicketDTO(
-             Title: "Test",
+             MovieTitle: "Test",
                RoomNumber: "5",
      AmountPaid: 1.0M,
       OrderId: "#PlF519pkyx3hD",
@@ -662,7 +727,7 @@ public class CinemaControllerTests
             );
 
         var invalidTicket = new TicketDTO(
-             Title: "Test",
+             MovieTitle: "Test",
                RoomNumber: "5",
               OrderId: "",
      AmountPaid: 0,
@@ -676,7 +741,7 @@ public class CinemaControllerTests
             );
 
         var ticketWithInvalidUserid = new TicketDTO(
-             Title: "Test",
+             MovieTitle: "Test",
              RoomNumber: "5",
               OrderId: "#PlF519pkyx3hD",
      AmountPaid: 0,
@@ -726,5 +791,196 @@ public class CinemaControllerTests
         Assert.Equal("O usuário com o id ff9cff63 - 6c05 - 4720 - aea3 - f251aac168e2 não foi encontrado",
             ticketErrorsWithInvalidUserid[0]);
     }
+
+    [Fact]
+    public async Task UpdateTicket_ReturnsOkResultWhenTicketSuccessfullyUsed()
+    {
+        CinemaAccountTests cinemaAccountTests = new CinemaAccountTests();
+        var controller = cinemaAccountTests.GetAccountControllerForTesting();
+        var cinemaController = GetTestCinemaController();
+
+        var validRoom = new RoomModel()
+        {
+            RoomNumber = "2",
+            EventDateTime = new DateTime(2026, 1, 1, 0, 0, 0),
+            MovieTitle = "Avatar",
+            MovieCategory = "Aventura"
+        };
+
+        var roomResult = await cinemaController.CreateRoom(validRoom);
+
+
+        var okRoomResult = roomResult as OkObjectResult;
+        var newRoom = TestResultHelpers.GetPropertyValue<RoomModel>(okRoomResult.Value, "Room");
+
+        var validSeat = new SeatModel()
+        {
+            SeatNumber = new List<string> { "A-1" },
+            SeatPrice = 4,
+            RoomId = newRoom.Id,
+        };
+
+        var validUser = new UserRegisterModel
+        {
+            UserName = "testuser",
+            Email = "test@example.com",
+            Password = "36147538##Aa",
+            Role = "Admin"
+        };
+
+        await cinemaController.AddSeat(validSeat);
+        await controller.Register(validUser);
+        var result = await controller.GetUsers();
+
+        var resultRoom = await cinemaController.GetRoom();
+
+        var okRoomsResult = resultRoom as OkObjectResult;
+
+        var rooms = TestResultHelpers.GetPropertyValue<List<RoomModel>>(okRoomsResult.Value, "Rooms");
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var userList = (List<UserDTO>)okResult.Value.GetType().GetProperty("Users")
+             .GetValue(okResult.Value);
+
+        var validTicket = new TicketDTO(
+             MovieTitle: "Test",
+             OrderId: "#PlF519pkyx3hD",
+             RoomNumber: "5",
+     AmountPaid: 0,
+     EventDateTime: new EventDateTime
+     {
+         Date = DateTime.Parse("2025-11-16"),
+         Time = TimeSpan.Parse("04:30:00")
+     },
+     UserId: userList[0].Id,
+     PurchasedSeats: new List<string> { "A-1" }
+            );
+
+
+        var ticketResult = await cinemaController.CreateTicket(rooms[6].Id, validTicket);
+
+        Assert.IsType<OkObjectResult>(ticketResult);
+        var okTicketResult = ticketResult as OkObjectResult;
+        Assert.NotNull(okTicketResult);
+
+        var ticket = TestResultHelpers.GetPropertyValue<TicketDTO>(okTicketResult.Value, "Ticket");
+
+
+        Guid ticketId = Guid.Empty; 
+
+        if (ticket.Id.HasValue)
+        {
+            ticketId = ticket.Id.Value; 
+        }
+
+        var resultValidate = await cinemaController.UpdateTicket(ticketId);
+
+        Assert.IsType<OkObjectResult>(resultValidate);
+        var okValidateResult = resultValidate as OkObjectResult;
+        Assert.NotNull(okValidateResult);
+
+        var hasValidated = (bool)okValidateResult.Value;
+
+        Assert.True(hasValidated);
     }
+
+    [Fact]
+    public async Task UpdateTicket_ReturnsBadRequestWhenTicketAlreadyUsed()
+    {
+        CinemaAccountTests cinemaAccountTests = new CinemaAccountTests();
+        var controller = cinemaAccountTests.GetAccountControllerForTesting();
+        var cinemaController = GetTestCinemaController();
+
+        var validRoom = new RoomModel()
+        {
+            RoomNumber = "2",
+            EventDateTime = new DateTime(2026, 1, 1, 0, 0, 0),
+            MovieTitle = "Avatar",
+            MovieCategory = "Aventura"
+        };
+
+        var roomResult = await cinemaController.CreateRoom(validRoom);
+
+
+        var okRoomResult = roomResult as OkObjectResult;
+        var newRoom = TestResultHelpers.GetPropertyValue<RoomModel>(okRoomResult.Value, "Room");
+
+        var validSeat = new SeatModel()
+        {
+            SeatNumber = new List<string> { "A-1" },
+            SeatPrice = 4,
+            RoomId = newRoom.Id,
+        };
+
+        var validUser = new UserRegisterModel
+        {
+            UserName = "testuser",
+            Email = "test@example.com",
+            Password = "36147538##Aa",
+            Role = "Admin"
+        };
+
+        await cinemaController.AddSeat(validSeat);
+        await controller.Register(validUser);
+        var result = await controller.GetUsers();
+
+        var resultRoom = await cinemaController.GetRoom();
+
+        var okRoomsResult = resultRoom as OkObjectResult;
+
+        var rooms = TestResultHelpers.GetPropertyValue<List<RoomModel>>(okRoomsResult.Value, "Rooms");
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var userList = (List<UserDTO>)okResult.Value.GetType().GetProperty("Users")
+             .GetValue(okResult.Value);
+
+        var validTicket = new TicketDTO(
+             MovieTitle: "Test",
+             OrderId: "#PlF519pkyx3hD",
+             RoomNumber: "5",
+     AmountPaid: 0,
+     EventDateTime: new EventDateTime
+     {
+         Date = DateTime.Parse("2025-11-16"),
+         Time = TimeSpan.Parse("04:30:00")
+     },
+     UserId: userList[0].Id,
+     PurchasedSeats: new List<string> { "A-1" }
+            );
+
+
+        var ticketResult = await cinemaController.CreateTicket(rooms[7].Id, validTicket);
+
+        Assert.IsType<OkObjectResult>(ticketResult);
+        var okTicketResult = ticketResult as OkObjectResult;
+        Assert.NotNull(okTicketResult);
+
+        var ticket = TestResultHelpers.GetPropertyValue<TicketDTO>(okTicketResult.Value, "Ticket");
+
+
+        Guid ticketId = Guid.Empty;
+
+        if (ticket.Id.HasValue)
+        {
+            ticketId = ticket.Id.Value;
+        }
+
+        await cinemaController.UpdateTicket(ticketId);
+        var resultValidate = await cinemaController.UpdateTicket(ticketId);
+
+        Assert.IsType<BadRequestObjectResult>(resultValidate);
+        var badValidateResult = resultValidate as BadRequestObjectResult;
+        Assert.NotNull(badValidateResult);
+
+        var errors = TestResultHelpers.GetPropertyValue<List<string>>(badValidateResult.Value, "Errors");
+
+        foreach (var error in errors)
+        {
+            Assert.NotNull(error);
+            Assert.NotEmpty(error);
+        }
+
+        Assert.Equal($"O ingresso com o id {ticketId} já foi usado", errors[0]);
+    }
+}
 

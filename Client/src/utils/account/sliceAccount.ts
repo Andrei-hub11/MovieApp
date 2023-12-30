@@ -6,6 +6,7 @@ import {
   User,
   UserLogin,
   UserRegister,
+  UserTickets,
 } from "../../types";
 
 import accountService from "./accountService";
@@ -18,6 +19,8 @@ interface AccountUserState {
   message: string;
   Role: [string];
   hasNotification: boolean;
+  categorySelected: string;
+  searchMovie: string;
   userNotification: string[] | [];
 }
 
@@ -31,6 +34,8 @@ const initialState: AccountUserState = {
   },
   Role: [""],
   hasNotification: false,
+  categorySelected: "",
+  searchMovie: "",
   userNotification: [],
   isError: false,
   isSuccess: false,
@@ -137,6 +142,23 @@ const accountSlice = createSlice({
       state.userNotification = [];
       state.hasNotification = false;
     },
+    resetHasNotification: (state) => {
+      state.hasNotification = false;
+    },
+    setCategorySelected: (state, action: PayloadAction<string>) => {
+      if (state.categorySelected === action.payload) {
+        state.categorySelected = "";
+        return;
+      }
+      state.categorySelected = action.payload;
+    },
+    setSearchMovie: (state, action: PayloadAction<string>) => {
+      state.searchMovie = action.payload;
+    },
+    resetSearchAndSelectedCategory: (state) => {
+      state.categorySelected = "";
+      state.searchMovie = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -210,11 +232,14 @@ const accountSlice = createSlice({
       .addCase(createTicket.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(createTicket.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.User.Tickets = action.payload.Ticket;
-      })
+      .addCase(
+        createTicket.fulfilled,
+        (state, action: PayloadAction<{ Ticket: UserTickets }>) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.User.Tickets = [...state.User.Tickets, action.payload.Ticket];
+        }
+      )
       .addCase(createTicket.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
@@ -258,6 +283,13 @@ const accountSlice = createSlice({
   },
 });
 
-export const { reset, setNewNotification, resetNotifications } =
-  accountSlice.actions;
+export const {
+  reset,
+  setNewNotification,
+  resetNotifications,
+  setCategorySelected,
+  setSearchMovie,
+  resetSearchAndSelectedCategory,
+  resetHasNotification,
+} = accountSlice.actions;
 export default accountSlice.reducer;

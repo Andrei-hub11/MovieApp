@@ -1,13 +1,12 @@
-import { useState } from "react";
-
-import { useTypedSelector } from "../../app/store";
-import { IconProps, IndicatorProps, InputsProps } from "../../types";
+import { IconProps, IndicatorProps, UserTickets } from "../../types";
+import useUserManagement from "./useUserManager";
 
 import {
   ArrowIcon,
   ContainerBtn,
   IconContainer,
   InformationContainer,
+  Input,
   NavContainer,
   SelectedTickets,
   UserBtn,
@@ -21,23 +20,32 @@ import {
 
 import TicketPanel from "../../components/TicketList/TicketList";
 import Indicator from "../../components/SectionIndicator/Indicator";
-import Input from "../../components/Input/Input";
 import Icon from "../../components/Icon/Icon";
 
-import anakin from "../../assets/profile-image.jpg";
 import indicatorIcon from "../../assets/octicon_arrow-right-24.svg";
 import SearchIcon from "../../assets/ic_round-search.svg";
 import arrowIcon from "../../assets/solar_arrow-left-linear.svg";
+import defaultProfilePicture from "../../assets/imagem de perfil default.png";
 
 interface userProps {
   // para garantir que o indicator não vai ser renderizado desnecessariamente
   isUnique: boolean;
 }
 function UserManager({ isUnique }: userProps) {
-  const { User } = useTypedSelector((state) => state.account);
-
-  const [showTickets, setShowTickets] = useState<boolean>(false);
-  const [ticketsNumber, setTicketsNumber] = useState<number>(0);
+  const {
+    UserFound,
+    showUser,
+    isValidEmail,
+    showTickets,
+    ticketsNumber,
+    handleCloseTickets,
+    handlShowTickets,
+    handleSumTicketsNumber,
+    handleMarkTicketUsed,
+    handleDecrementTicketsNumber,
+    handleOnChangeSearch,
+    handleGetUserByEmail,
+  } = useUserManagement();
 
   const indicatorProps: IndicatorProps = {
     sectionName: "Controle de usuários",
@@ -49,20 +57,7 @@ function UserManager({ isUnique }: userProps) {
     $primary: true,
     src: SearchIcon,
     alt: "search-icon",
-    onClick: undefined,
-  };
-
-  const inputProps: InputsProps = {
-    placeholder: "E-mail do usuário",
-    onChange: undefined,
-  };
-
-  const handleSumTicketsNumber = () => {
-    setTicketsNumber((prevState) => prevState + 1);
-  };
-
-  const handleDecrementTicketsNumber = () => {
-    setTicketsNumber((prevState) => prevState - 1);
+    onClick: handleGetUserByEmail,
   };
 
   return (
@@ -76,16 +71,15 @@ function UserManager({ isUnique }: userProps) {
       {!showTickets ? (
         <Indicator indicator={indicatorProps} $isUnique={isUnique} />
       ) : (
-        <ArrowIcon
-          src={arrowIcon}
-          onClick={() => {
-            setShowTickets(!showTickets);
-          }}
-        />
+        <ArrowIcon src={arrowIcon} onClick={handlShowTickets} />
       )}
       {!showTickets ? (
         <NavContainer key={1}>
-          <Input input={inputProps}></Input>
+          <Input
+            placeholder="E-mail do usuário"
+            onChange={handleOnChangeSearch}
+            $primary={isValidEmail ? true : false}
+          />
           <IconContainer $primary>
             <Icon icon={icon} />
           </IconContainer>
@@ -104,36 +98,48 @@ function UserManager({ isUnique }: userProps) {
               {ticketsNumber <= 9 ? ticketsNumber : `${9}+`}
             </SelectedTickets>
           ) : null}
-          <UserBtn $primary>Validar Ingressos</UserBtn>
+          {ticketsNumber ? (
+            <UserBtn $primary onClick={handleMarkTicketUsed}>
+              Validar Ingressos
+            </UserBtn>
+          ) : (
+            <UserBtn $primary onClick={handleCloseTickets}>
+              Voltar
+            </UserBtn>
+          )}
         </NavContainer>
       )}
-      {!showTickets ? (
+      {!showTickets && showUser ? (
         <UserContainer>
           <UserInnerContainer>
             <UserImageContainer>
-              <UserImage src={anakin} />
+              <UserImage
+                src={
+                  UserFound.ProfileImagePath
+                    ? import.meta.env.VITE_MOVIE_APP_API_URL +
+                      UserFound.ProfileImagePath
+                    : defaultProfilePicture
+                }
+                alt="imagem de perfil do usuário"
+              />
             </UserImageContainer>
             <InformationContainer>
-              <UserInformation>Anakin Skywalker</UserInformation>
-              <UserInformation>anakin.skywalker@jediorder.net</UserInformation>
+              <UserInformation>{UserFound.UserName}</UserInformation>
+              <UserInformation>{UserFound.Email}</UserInformation>
             </InformationContainer>
           </UserInnerContainer>
           <ContainerBtn>
-            <UserBtn
-              onClick={() => {
-                setShowTickets(!showTickets);
-              }}
-            >
-              Ver Ingressos
-            </UserBtn>
+            <UserBtn onClick={handlShowTickets}>Ver Ingressos</UserBtn>
           </ContainerBtn>
         </UserContainer>
       ) : (
         <TicketPanel
-          tickets={User.Tickets}
+          tickets={UserFound.Tickets.filter((ticket) => ticket.IsUsed !== true)}
           showCheckbox={true}
-          handleSum={handleSumTicketsNumber}
-          handleDecrement={handleDecrementTicketsNumber}
+          handleSum={(ticket: UserTickets) => handleSumTicketsNumber(ticket)}
+          handleDecrement={(ticket: UserTickets) =>
+            handleDecrementTicketsNumber(ticket)
+          }
         />
       )}
     </UserManagerContainer>

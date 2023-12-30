@@ -1,10 +1,10 @@
-import { useLocation } from "react-router-dom";
-
-import useRedirect from "../../utils/customHook/useRedirect/useRedirect";
-import { useTypedSelector } from "../../app/store";
+import { navicons } from "../../constants/constants";
+import useSidebar from "./useSidebar";
 
 import {
   Aside,
+  LogoutContainer,
+  LogoutLink,
   ProfileImage,
   ProfileImageContainer,
   SideLInk,
@@ -12,22 +12,25 @@ import {
 } from "./SidebarStyles";
 
 import Icon from "../Icon/Icon";
-import { navicons } from "../../constants/constants";
+import notificationIcon from "../../assets/mingcute_notification-fill.svg";
+import ticketsIcon from "../../assets/tabler_book-filled.svg";
+import logoutIcon from "../../assets/material-symbols_logout.svg";
+import defaultProfilePicture from "../../assets/imagem de perfil default.png";
 
 function Sidebar() {
-  const { User, Role, hasNotification } = useTypedSelector(
-    (state) => state.account
-  );
-  const { redirectTo } = useRedirect();
-  const location = useLocation();
-
-  const currentPath: string = location.pathname;
+  const { User, Role, hasNotification, currentPath, handleLogout, redirectTo } =
+    useSidebar();
 
   return (
     <Aside>
       <ProfileImageContainer>
         <ProfileImage
-          src={import.meta.env.VITE_MOVIE_APP_API_URL + User.ProfileImagePath}
+          src={
+            User.ProfileImagePath
+              ? import.meta.env.VITE_MOVIE_APP_API_URL + User.ProfileImagePath
+              : defaultProfilePicture
+          }
+          alt="imagem de perfil"
         />
       </ProfileImageContainer>
       <SideList>
@@ -57,7 +60,12 @@ function Sidebar() {
             >
               <Icon
                 icon={{
-                  src: link.default,
+                  src:
+                    hasNotification && link.route === "/notifications"
+                      ? notificationIcon
+                      : hasNotification && link.route === "/ingressos"
+                      ? ticketsIcon
+                      : link.default,
                   alt: "icone de navegação",
                 }}
               />
@@ -66,6 +74,17 @@ function Sidebar() {
           );
         })}
       </SideList>
+      <LogoutContainer>
+        <LogoutLink onClick={handleLogout}>
+          <Icon
+            icon={{
+              src: logoutIcon,
+              alt: "icone de navegação",
+            }}
+          />
+          Sair
+        </LogoutLink>
+      </LogoutContainer>
     </Aside>
   );
 }

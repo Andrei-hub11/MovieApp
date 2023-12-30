@@ -1,5 +1,7 @@
 import { useState, useEffect, ChangeEvent, MouseEventHandler } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
 import { UpdateImage } from "../../types";
 
 import {
@@ -8,16 +10,24 @@ import {
   updateProfileUser,
   uploadProfileImage,
 } from "../../utils/account/sliceAccount";
-import { createGiftCard, getGiftCards } from "../../utils/cinema/sliceCinema";
+import {
+  ManagerReset,
+  createGiftCard,
+  getGiftCards,
+} from "../../utils/cinema/sliceCinema";
 import { useAppDispatch, useTypedSelector } from "../../app/store";
-import { useNavigate } from "react-router-dom";
+import usePurchaseReset from "../../utils/customHook/usePurchaseReset/usePurchaseReset";
 
 const useProfile = () => {
   const { User, isError, isLoading, isSuccess, message, Role } =
     useTypedSelector((state) => state.account);
-  const { GiftCards } = useTypedSelector((state) => state.cinema);
+  const { GiftCards, isManagerSuccess } = useTypedSelector(
+    (state) => state.cinema
+  );
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  usePurchaseReset();
 
   const [isEditable, setIsEditable] = useState(true);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -142,8 +152,10 @@ const useProfile = () => {
   };
 
   useEffect(() => {
-    dispatch(getGiftCards());
-  }, [dispatch]);
+    if (Role[0] === "Admin") {
+      dispatch(getGiftCards());
+    }
+  }, [Role, dispatch]);
 
   useEffect(() => {
     if (isError) {
@@ -155,7 +167,19 @@ const useProfile = () => {
       toast.success("A atualizção foi bem-sucedida! 😉");
       dispatch(reset());
     }
-  }, [isError, message, dispatch, isLoading, isSuccess, navigate]);
+
+    if (isManagerSuccess) {
+      dispatch(ManagerReset());
+    }
+  }, [
+    isError,
+    message,
+    dispatch,
+    isLoading,
+    isSuccess,
+    isManagerSuccess,
+    navigate,
+  ]);
 
   return {
     isEditable,

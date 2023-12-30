@@ -6,9 +6,12 @@ import useRedirect from "../../utils/customHook/useRedirect/useRedirect";
 
 import { NavBottom, NavBottomIconContainer, NavIcons } from "./NavbottomStyles";
 
+import notificationIcon from "../../assets/mingcute_notification-fill.svg";
+import ticketsIcon from "../../assets/tabler_book-filled.svg";
+
 function Navbottom() {
   const { redirectTo } = useRedirect();
-  const account = useTypedSelector((state) => state.account);
+  const { Role, hasNotification } = useTypedSelector((state) => state.account);
   const location = useLocation();
 
   const currentPath: string = location.pathname;
@@ -17,14 +20,11 @@ function Navbottom() {
     <NavBottom>
       <NavIcons>
         {navicons.map((icon) => {
-          if (
-            icon.route === "/controle-de-usuarios" &&
-            account.Role[0] !== "Admin"
-          ) {
+          if (icon.route === "/controle-de-usuarios" && Role[0] !== "Admin") {
             return;
           }
 
-          if (icon.route === "/ingressos" && account.Role[0] === "Admin") {
+          if (icon.route === "/ingressos" && Role[0] === "Admin") {
             return;
           }
 
@@ -37,7 +37,15 @@ function Navbottom() {
               }}
             >
               <img
-                src={currentPath === icon.route ? icon.selected : icon.default}
+                src={
+                  currentPath === icon.route
+                    ? icon.selected
+                    : hasNotification && icon.route === "/notifications"
+                    ? notificationIcon
+                    : hasNotification && icon.route === "/ingressos"
+                    ? ticketsIcon
+                    : icon.default
+                }
                 loading="eager"
                 alt="icone de navegação"
               />

@@ -138,6 +138,7 @@ export const ProfileInput = styled.input<AppearanceProps>`
     color: ${({ theme: { colors } }) => colors.text};
     letter-spacing: 0.1rem;
     background: ${({ theme: { colors } }) => colors.secondary_bg};
+    min-width: 10rem;
     border-bottom: ${({ $isUnique, theme: { colors } }) =>
       $isUnique
         ? `solid .1rem ${colors.secondary_bg}`
@@ -194,6 +195,7 @@ export const ProfileBtn = styled.a<AppearanceProps>`
 export const CodeContainer = styled.div`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     margin-top: 5.4rem;
+    margin-bottom: 8rem;
     display: flex;
     flex-direction: column;
     width: 100%;

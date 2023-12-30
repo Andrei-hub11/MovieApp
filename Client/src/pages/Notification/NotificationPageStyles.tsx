@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { AppearanceProps } from "../../types";
+import { motion } from "framer-motion";
 
 export const NotificationContainer = styled.div`
   grid-area: main;
@@ -14,7 +15,7 @@ export const ContainerInner = styled.div`
   }
 `;
 
-export const Notification = styled.div`
+export const Notification = styled(motion.div)`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     padding: 2rem 3.65rem;
     width: 32rem;

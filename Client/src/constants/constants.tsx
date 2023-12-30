@@ -1,10 +1,5 @@
 import { IconsList, MovieSlider } from "../types";
 
-import image1 from "../assets/1.jpg";
-import image2 from "../assets/2.jpg";
-import image3 from "../assets/3.jpg";
-import image4 from "../assets/4.jpg";
-import image5 from "../assets/5.jpg";
 import image6 from "../assets/6.jpg";
 import image7 from "../assets/7.jpg";
 import image8 from "../assets/8.jpg";
@@ -26,9 +21,9 @@ import interestelarImage from "../assets/interestelar.jpg";
 import avatarImage from "../assets/avatar-t.jpg";
 import hobbitImage from "../assets/o hobbit, a desolação de smaug.jpg";
 import panteraNegra2Image from "../assets/pantera negra 2.jpg";
+import dunaImage from "../assets/Duna.jpg";
+import madMaxImage from "../assets/mad max, estrada de fúria.jpg";
 import johnWickImage from "../assets/johnwick4.jpg";
-
-export const images = [image1, image2, image3, image4, image5];
 
 export const moviesComingSoon = [image6, image7, image8, image9, image10];
 
@@ -74,6 +69,19 @@ export const movies: MovieSlider[] = [
     $primary: true,
   },
   {
+    imageSrc: johnWickImage,
+    altText: "imagem do filme John Wick: Baba Yaga",
+    status: "Em cartaz",
+    buttonText: "John Wick: Baba Yaga",
+  },
+  {
+    imageSrc: madMaxImage,
+    altText: "imagem do filme Mad Max: Estrada de Fúria",
+    status: "Em cartaz",
+    buttonText: "Mad Max: Estrada de Fúria",
+    $primary: true,
+  },
+  {
     imageSrc: interestelarImage,
     altText: "imagem do filme Interestelar",
     status: "Em breve",
@@ -92,10 +100,10 @@ export const movies: MovieSlider[] = [
     buttonText: "Pantera Negra: Wakanda Para Sempre",
   },
   {
-    imageSrc: johnWickImage,
-    altText: "imagem do filme John Wick: Baba Yaga",
-    status: "Em cartaz",
-    buttonText: "John Wick: Baba Yaga",
+    imageSrc: dunaImage,
+    altText: "imagem do filme Duna",
+    status: "Em breve",
+    buttonText: "Duna",
   },
 ];
 

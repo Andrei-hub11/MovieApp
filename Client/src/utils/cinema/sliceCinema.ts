@@ -6,11 +6,12 @@ import {
   SeatsGroup,
   TicketData,
   User,
+  UserTickets,
 } from "../../types";
 import cinemaService from "./cinemaService";
 
 interface CinemaState {
-  Users: User[];
+  UserFound: User;
   Tickets: [] | TicketData;
   Rooms: Room[] | [];
   movieOfRoom: string;
@@ -25,15 +26,13 @@ interface CinemaState {
 }
 
 const initialState: CinemaState = {
-  Users: [
-    {
-      Id: "",
-      UserName: "",
-      Email: "",
-      ProfileImagePath: "",
-      Tickets: [],
-    },
-  ],
+  UserFound: {
+    Id: "",
+    UserName: "",
+    Email: "",
+    ProfileImagePath: "",
+    Tickets: [],
+  },
   Tickets: [],
   Rooms: [],
   movieOfRoom: "",
@@ -53,6 +52,18 @@ const initialState: CinemaState = {
   isManagerLoading: false,
   ManagerMessage: "",
 };
+
+export const getUserByEmail = createAsyncThunk(
+  "cinema/get-user-email",
+  async (email: string) => {
+    try {
+      return await cinemaService.getUserByEmail(email);
+    } catch (error) {
+      const message = (error as Error).message;
+      throw new Error(message);
+    }
+  }
+);
 
 export const getRooms = createAsyncThunk("cinema/get-rooms", async () => {
   try {
@@ -108,6 +119,18 @@ export const createGiftCard = createAsyncThunk(
   }
 );
 
+export const markTicketUsed = createAsyncThunk(
+  "cinema/mark-ticket-used",
+  async (tickets: UserTickets[]) => {
+    try {
+      return await cinemaService.markTicketUsed(tickets);
+    } catch (error) {
+      const message = (error as Error).message;
+      throw new Error(message);
+    }
+  }
+);
+
 const cinemaSlice = createSlice({
   name: "cinema",
   initialState: initialState,
@@ -127,6 +150,15 @@ const cinemaSlice = createSlice({
         { group: 5, seats: [] },
         { group: 6, seats: [] },
       ];
+    },
+    resetUserManager: (state) => {
+      state.UserFound = {
+        Id: "",
+        UserName: "",
+        Email: "",
+        ProfileImagePath: "",
+        Tickets: [],
+      };
     },
     setMovieOfRoom: (state, action: PayloadAction<string>) => {
       state.movieOfRoom = action.payload;
@@ -207,9 +239,28 @@ const cinemaSlice = createSlice({
 
       return state;
     },
+    resetGiftValidState: (state) => {
+      state.isGiftCardValid = "";
+    },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(getUserByEmail.pending, (state) => {
+        state.isManagerLoading = true;
+      })
+      .addCase(
+        getUserByEmail.fulfilled,
+        (state, action: PayloadAction<{ User: User }>) => {
+          state.isManagerLoading = false;
+          state.isManagerSuccess = true;
+          state.UserFound = action.payload.User;
+        }
+      )
+      .addCase(getUserByEmail.rejected, (state, action) => {
+        state.isManagerLoading = false;
+        state.isManagerError = true;
+        state.ManagerMessage = action.error?.message || "Unknown error";
+      })
       .addCase(getRooms.pending, (state) => {
         state.isManagerLoading = true;
       })
@@ -291,15 +342,29 @@ const cinemaSlice = createSlice({
         state.isManagerLoading = false;
         state.isManagerError = true;
         state.ManagerMessage = action.error?.message || "Unknown error";
+      })
+      .addCase(markTicketUsed.pending, (state) => {
+        state.isManagerLoading = true;
+      })
+      .addCase(markTicketUsed.fulfilled, (state) => {
+        state.isManagerLoading = false;
+        state.isManagerSuccess = true;
+      })
+      .addCase(markTicketUsed.rejected, (state, action) => {
+        state.isManagerLoading = false;
+        state.isManagerError = true;
+        state.ManagerMessage = action.error?.message || "Unknown error";
       });
   },
 });
 
 export const {
   ManagerReset,
+  resetUserManager,
   setMovieOfRoom,
   addGroupSeats,
   addGapToSpecificItems,
   resetSeatsGroup,
+  resetGiftValidState,
 } = cinemaSlice.actions;
 export default cinemaSlice.reducer;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useTypedSelector } from "../../app/store";
 import manageJWTCookieState from "../../utils/customHook/useJwt/useJwt";
@@ -8,13 +8,25 @@ import {
   getRooms,
   setMovieOfRoom,
 } from "../../utils/cinema/sliceCinema";
-import { setNewNotification } from "../../utils/account/sliceAccount";
+import {
+  reset,
+  setCategorySelected,
+  setNewNotification,
+  setSearchMovie,
+} from "../../utils/account/sliceAccount";
 import { BtnList } from "../../types";
+import { toast } from "react-toastify";
+import usePurchaseReset from "../../utils/customHook/usePurchaseReset/usePurchaseReset";
 // Importe as funções e tipos necessários
 
 const useHome = () => {
   const { Rooms, isManagerSuccess, isManagerError, ManagerMessage } =
     useTypedSelector((state) => state.cinema);
+  const { categorySelected, searchMovie, isSuccess } = useTypedSelector(
+    (state) => state.account
+  );
+
+  usePurchaseReset();
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -33,10 +45,12 @@ const useHome = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (notifications.length > 1) {
+    if (notifications.length > 0 && isSuccess) {
       dispatch(setNewNotification(notifications));
+      toast.success("Ingresso garantido. 😀");
+      dispatch(reset());
     }
-  }, [notifications, dispatch]);
+  }, [notifications, isSuccess, dispatch]);
 
   useEffect(() => {
     if (isManagerSuccess) {
@@ -50,20 +64,55 @@ const useHome = () => {
     }
   }, [isManagerError, isManagerSuccess, ManagerMessage, Rooms, dispatch]);
 
+  const handleSearchMovie = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSearchMovie(event.target.value));
+  };
+
+  const handleSelectedCategory = (
+    event: React.MouseEvent<HTMLAnchorElement>
+  ) => {
+    if (event.currentTarget.textContent) {
+      dispatch(setCategorySelected(event.currentTarget.textContent));
+    }
+  };
+
   const btnList: BtnList[] = categoryList?.map((category) => {
     return {
       btn: {
-        $primary: true,
-        onClick: undefined,
+        $primary: !categorySelected
+          ? true
+          : categorySelected === category
+          ? true
+          : false,
+        onClick: handleSelectedCategory,
       },
       btn_text: category,
     };
   });
 
+  const roomsFiltered = useMemo(() => {
+    if (categorySelected.trim() === "" && searchMovie.trim() === "") {
+      return [];
+    }
+    return Rooms?.filter((room) => {
+      return categorySelected
+        ? room.MovieCategory.toLowerCase().includes(
+            categorySelected.toLowerCase()
+          )
+        : room.MovieTitle.toLowerCase().includes(searchMovie.toLowerCase()) ||
+            room.MovieSubtitle.toLowerCase().includes(
+              searchMovie.toLowerCase()
+            );
+    });
+  }, [Rooms, categorySelected, searchMovie]);
+
   return {
     btnList,
-
+    roomsFiltered,
     Rooms,
+    categorySelected,
+    searchMovie,
+    handleSearchMovie,
     handleSelectedMovie,
   };
 };

@@ -48,7 +48,7 @@ const updateProfileUser = async (userData: UpdateUser) => {
   const { token } = manageJWTCookieState();
 
   try {
-    const { data } = await axios.post(
+    const { data } = await axios.put(
       API_URL + `update-user`,
       { UserName: userData.UserName, Email: userData.Email },
       {

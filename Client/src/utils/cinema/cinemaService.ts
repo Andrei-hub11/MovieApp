@@ -1,8 +1,33 @@
 import axios, { AxiosError } from "axios";
 import manageJWTCookieState from "../customHook/useJwt/useJwt";
-import { ErrorResponse } from "../../types";
+import { ErrorResponse, UserTickets } from "../../types";
+import ToastService from "../variables/toastService";
 
 const API_URL = import.meta.env.VITE_MOVIE_APP_API_URL + "/api/v1/";
+
+const getUserByEmail = async (userEmail: string) => {
+  const { token } = manageJWTCookieState();
+
+  try {
+    const { data } = await axios.get(API_URL + `user-by-email/${userEmail}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    if ((error as AxiosError<ErrorResponse>).response) {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      if (axiosError.response?.status === 400) {
+        ToastService.showError(axiosError.response?.data.Errors);
+      }
+      throw new Error(axiosError.response?.data.Message || "Erro desconhecido");
+    } else {
+      throw new Error("Erro desconhecido");
+    }
+  }
+};
 
 const getRooms = async () => {
   const { token } = manageJWTCookieState();
@@ -112,12 +137,47 @@ const createGiftCard = async () => {
   }
 };
 
+const markTicketUsed = async (tickets: UserTickets[]) => {
+  const { token } = manageJWTCookieState();
+
+  for (const ticket of tickets) {
+    try {
+      const { data } = await axios.put(
+        API_URL + `update-ticket/${ticket.Id}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      ToastService.showSuccess("Ingresso validado");
+      return data;
+    } catch (error) {
+      if ((error as AxiosError<ErrorResponse>).response) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+        if (axiosError.response?.status === 400) {
+          ToastService.showError(axiosError.response?.data.Errors);
+        }
+        throw new Error(
+          axiosError.response?.data.Message || "Erro desconhecido"
+        );
+      } else {
+        throw new Error("Erro desconhecido");
+      }
+    }
+  }
+};
+
 const cinemaService = {
+  getUserByEmail,
   getRooms,
   getGiftCards,
   getCheckGiftCard,
   getRoomsByMovieTitle,
   createGiftCard,
+  markTicketUsed,
 };
 
 export default cinemaService;

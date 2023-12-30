@@ -50,7 +50,7 @@ export const SideLInk = styled.li<AppearanceProps>`
   font-family: ${({ theme: { fonts } }) => fonts[0]};
   gap: 1rem;
   padding: 0.3rem 0.5rem;
-  color: ${({ $isUnique }) => ($isUnique ? "#ff0000" : "#fff")};
+  color: ${({ $isUnique }) => ($isUnique ? "#309D1D" : "#fff")};
   cursor: pointer;
 
   &::after {
@@ -76,4 +76,15 @@ export const SideLInk = styled.li<AppearanceProps>`
     z-index: -1;
     transition: width 0.3s ease-in-out;
   }
+`;
+
+export const LogoutContainer = styled.div`
+  position: relative;
+  height: 25rem;
+`;
+
+export const LogoutLink = styled(SideLInk)`
+  margin-left: 1.4rem;
+  position: absolute;
+  bottom: 2rem;
 `;

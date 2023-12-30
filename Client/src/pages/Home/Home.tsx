@@ -39,7 +39,15 @@ import SearchIcon from "../../assets/ic_round-search.svg";
 import useHome from "./useHome";
 
 function Home() {
-  const { btnList, Rooms, handleSelectedMovie } = useHome();
+  const {
+    btnList,
+    Rooms,
+    roomsFiltered,
+    categorySelected,
+    searchMovie,
+    handleSearchMovie,
+    handleSelectedMovie,
+  } = useHome();
 
   const [width, setWidth] = useState<number>(0);
   const carousel = useRef<HTMLDivElement>(null);
@@ -71,7 +79,7 @@ function Home() {
 
   const inputProps: InputsProps = {
     placeholder: "Pesquise um filme",
-    onChange: undefined,
+    onChange: handleSearchMovie,
   };
 
   return (
@@ -105,20 +113,36 @@ function Home() {
               drag="x"
               dragConstraints={{ right: 0, left: -width }}
             >
-              {Rooms?.map((movie) => (
-                <CarouselItem
-                  key={movie.Id}
-                  onClick={() => handleSelectedMovie(movie.MovieTitle)}
-                >
-                  <CarouselImage
-                    src={
-                      import.meta.env.VITE_MOVIE_APP_API_URL +
-                      movie.MovieImagePath
-                    }
-                    alt="imagem de filme"
-                  />
-                </CarouselItem>
-              ))}
+              {!categorySelected && !searchMovie
+                ? Rooms?.map((movie) => (
+                    <CarouselItem
+                      key={movie.Id}
+                      onClick={() => handleSelectedMovie(movie.MovieTitle)}
+                    >
+                      <CarouselImage
+                        src={
+                          import.meta.env.VITE_MOVIE_APP_API_URL +
+                          movie.MovieImagePath
+                        }
+                        alt="imagem de filme"
+                      />
+                    </CarouselItem>
+                  ))
+                : roomsFiltered?.map((movie) => (
+                    <CarouselItem
+                      key={movie.Id}
+                      onClick={() => handleSelectedMovie(movie.MovieTitle)}
+                      $isUnique
+                    >
+                      <CarouselImage
+                        src={
+                          import.meta.env.VITE_MOVIE_APP_API_URL +
+                          movie.MovieImagePath
+                        }
+                        alt="imagem de filme"
+                      />
+                    </CarouselItem>
+                  ))}
             </PostersCarouselInner>
           </PostersCarousel>
         </PostersContainer>
@@ -158,14 +182,27 @@ function Home() {
         </FlexContainer>
       </Container>
       <MoveListContainer>
-        {Rooms?.map((room) => (
-          <MovieContainer key={room.Id}>
-            <MovieImage
-              src={import.meta.env.VITE_MOVIE_APP_API_URL + room.MovieImagePath}
-              onClick={() => handleSelectedMovie(room.MovieTitle)}
-            />
-          </MovieContainer>
-        ))}
+        {!categorySelected && !searchMovie
+          ? Rooms?.map((room) => (
+              <MovieContainer key={room.Id}>
+                <MovieImage
+                  src={
+                    import.meta.env.VITE_MOVIE_APP_API_URL + room.MovieImagePath
+                  }
+                  onClick={() => handleSelectedMovie(room.MovieTitle)}
+                />
+              </MovieContainer>
+            ))
+          : roomsFiltered?.map((room) => (
+              <MovieContainer key={room.Id}>
+                <MovieImage
+                  src={
+                    import.meta.env.VITE_MOVIE_APP_API_URL + room.MovieImagePath
+                  }
+                  onClick={() => handleSelectedMovie(room.MovieTitle)}
+                />
+              </MovieContainer>
+            ))}
       </MoveListContainer>
     </CentralSection>
   );

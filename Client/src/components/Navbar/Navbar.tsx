@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-
-import { InputsProps, BtnList, IconProps, IndicatorProps } from "../../types";
+import { InputsProps, IconProps, IndicatorProps } from "../../types";
 
 import {
   BtnContainer,
@@ -15,10 +13,10 @@ import Button from "../Button/Button";
 import Icon from "../Icon/Icon";
 import Input from "../Input/Input";
 
-import Anakin from "../../assets/profile-image.jpg";
 import SearchIcon from "../../assets/ic_round-search.svg";
 import Indicator from "../SectionIndicator/Indicator";
-import { useTypedSelector } from "../../app/store";
+import useNavBar from "./useNavBar";
+import defaultProfilePicture from "../../assets/imagem de perfil default.png";
 
 interface navProps {
   isUnique?: boolean;
@@ -26,27 +24,7 @@ interface navProps {
 }
 
 function Navbar({ isUnique, indicatorProps }: navProps) {
-  const { Rooms } = useTypedSelector((state) => state.cinema);
-
-  const [categoryList, setCategoryist] = useState<[] | string[]>([]);
-
-  useEffect(() => {
-    if (Rooms) {
-      setCategoryist(
-        Array.from(new Set(Rooms.map((room) => room.MovieCategory)))
-      );
-    }
-  }, [Rooms]);
-
-  const btnList: BtnList[] = categoryList?.map((category) => {
-    return {
-      btn: {
-        $primary: true,
-        onClick: undefined,
-      },
-      btn_text: category,
-    };
-  });
+  const { User, btnList, handleSearchMovie } = useNavBar();
 
   const icon: IconProps = {
     $primary: true,
@@ -57,13 +35,20 @@ function Navbar({ isUnique, indicatorProps }: navProps) {
 
   const inputProps: InputsProps = {
     placeholder: "Pesquise um filme",
-    onChange: undefined,
+    onChange: handleSearchMovie,
   };
 
   return (
     <Header $isUnique={isUnique}>
       <ProfileImageContainer $isUnique={isUnique}>
-        <NavbarProfileImage src={Anakin} alt="profile-image" />
+        <NavbarProfileImage
+          src={
+            User.ProfileImagePath
+              ? import.meta.env.VITE_MOVIE_APP_API_URL + User.ProfileImagePath
+              : defaultProfilePicture
+          }
+          alt="imagem de perfil"
+        />
       </ProfileImageContainer>
       <Navegation>
         <BtnContainer $isUnique={isUnique}>

@@ -12,9 +12,7 @@ import {
 
 import { IndicatorProps } from "../../types";
 import indicatorIcon from "../../assets/octicon_arrow-right-24.svg";
-import manageJWTCookieState from "../../utils/customHook/useJwt/useJwt";
-import useSignalRConnection from "../../utils/customHook/useSignalRConnection/useSignalRConnection";
-import { useTypedSelector } from "../../app/store";
+import useNotification from "./useNotification";
 
 interface notificationProps {
   // para garantir que o indicator não vai ser renderizado desnecessariamente
@@ -22,10 +20,7 @@ interface notificationProps {
 }
 
 function NotificationPage({ isUnique }: notificationProps) {
-  const { userNotification } = useTypedSelector((state) => state.account);
-  const { token } = manageJWTCookieState();
-
-  const { notificationNumber } = useSignalRConnection(token);
+  const { userNotification, notificationNumber } = useNotification();
 
   const indicatorProps: IndicatorProps = {
     sectionName: "Notificações",
@@ -48,7 +43,20 @@ function NotificationPage({ isUnique }: notificationProps) {
       </ClearBtnContainer>
       <ContainerInner>
         {userNotification?.map((notification) => (
-          <Notification key={notification}>
+          <Notification
+            key={notification}
+            initial={{ opacity: 0, x: -100 }}
+            animate={{
+              opacity: [0, 1],
+              x: [-90, 0],
+              transition: { duration: 1, ease: "easeInOut" },
+            }}
+            exit={{
+              opacity: 0,
+              x: 200,
+              transition: { duration: 1, ease: "easeInOut" },
+            }}
+          >
             <NotificationText>{notification}</NotificationText>
           </Notification>
         ))}

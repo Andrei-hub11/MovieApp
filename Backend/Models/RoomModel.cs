@@ -14,6 +14,8 @@ public class RoomModel
     public string? MovieBackdropPath { get; set; }
     public DateTime? EventDateTime { get; set; }
     public ICollection<SeatModel> Seats { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 
     public RoomModel()
     {

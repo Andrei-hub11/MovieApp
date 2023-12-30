@@ -46,6 +46,34 @@ public class AccountController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "Admin")]
+    [HttpGet("user-by-email/{email}")]
+    public async Task<IActionResult> GetUserByEmail(string email)
+    {
+        try
+        {
+            var result = await _accountService.FindByEmailAsync(email);
+
+            if (result.IsError)
+            {
+                var errorMessages = result.Errors.Select(error => error.Description).ToList();
+                return BadRequest(new { Message = "Algo deu errado", Errors = errorMessages });
+            }
+
+            var userDTO = _mapper.Map<ApplicationUser, UserDTO>(result.Value);
+
+            return Ok(new { User = userDTO });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                Message = "Ocorreu um erro durante a busca do usuário.",
+                Error = ex.Message
+            });
+        }
+    }
+
     [Authorize(Policy = "UserOrAdmin")]
     [HttpGet("get-me")]
     public async Task<IActionResult> GetMe()
@@ -55,7 +83,7 @@ public class AccountController : ControllerBase
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Obtém o ID do usuário do token JWT
             var result = await _accountService.GetUserByIdAsync(userId);
             var identityUser = await _accountService.FindByEmailAsync(result.Value.Email);
-            var roles = await _accountService.GetRolesAsync(identityUser);
+            var roles = await _accountService.GetRolesAsync(identityUser.Value);
 
             return Ok(new { User = result.Value, Role = roles });
         }
@@ -97,16 +125,16 @@ public class AccountController : ControllerBase
         {
             var identityUser = await _accountService.FindByEmailAsync(user.Email);
 
-            if (identityUser == null || !await _accountService.CheckPasswordAsync(identityUser, user.Password))
+            if (identityUser.Value == null || !await _accountService.CheckPasswordAsync(identityUser.Value, user.Password))
             {
               return  BadRequest(new { Message = "Credenciais inválidas." });
             }
 
           
-                var roles = await _accountService.GetRolesAsync(identityUser);
-                var token = _tokenService.GenerateJwtToken(identityUser, roles);
+                var roles = await _accountService.GetRolesAsync(identityUser.Value);
+                var token = _tokenService.GenerateJwtToken(identityUser.Value, roles);
 
-                var userDTO = _mapper.Map<ApplicationUser, UserDTO>(identityUser);
+                var userDTO = _mapper.Map<ApplicationUser, UserDTO>(identityUser.Value);
                 return Ok(new { Token = token, User = userDTO, Role = roles });
            
         }
@@ -195,7 +223,7 @@ public class AccountController : ControllerBase
     }
 
     [Authorize(Policy = "UserOrAdmin")]
-    [HttpPost("update-user")]
+    [HttpPut("update-user")]
     public async Task<IActionResult> UpdateUser([FromBody] UserUpdateModel userData)
     {
         var validator = new UserUpdateValidator();

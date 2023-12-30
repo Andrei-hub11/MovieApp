@@ -148,8 +148,8 @@ public class CinemaService : ICinema
 
         var newTicket = new TicketModel
         {
-            Title = title,
-            Subtitle = subtitle ?? null,
+            MovieTitle = title,
+            MovieSubtitle = subtitle ?? null,
             OrderId = orderid,
             RoomNumber = roomnumber,
             AmountPaid = amount,
@@ -194,7 +194,10 @@ public class CinemaService : ICinema
         }
 
 
-       existingRoom.RoomNumber = roomEdit.RoomNumber ?? existingRoom.RoomNumber;
+        existingRoom.RoomNumber = roomEdit.RoomNumber ?? existingRoom.RoomNumber;
+        existingRoom.MovieTitle = roomEdit.MovieTitle ?? existingRoom.MovieTitle;
+        existingRoom.MovieSubtitle = roomEdit.MovieSubtitle ?? existingRoom.MovieSubtitle;
+        existingRoom.MovieCategory = roomEdit.MovieCategory ?? existingRoom.MovieCategory;
         existingRoom.EventDateTime = roomEdit.EventDateTime ?? existingRoom.EventDateTime;
 
         await _context.SaveChangesAsync();
@@ -233,9 +236,38 @@ public class CinemaService : ICinema
         return Result.Updated;
     }
 
-   
+    public async Task<ErrorOr<Updated>> UseTicketAsync(Guid ticketId)
+    {
+        List<Error> errors = new();
 
-    public async Task<ErrorOr<RoomModel>> AddSeatAsync(SeatModel seat)
+        var ticket = await _accountDBContext.Tickets.FirstOrDefaultAsync(ticket => ticket.Id == ticketId);
+
+        if (ticket == null)
+        {
+            errors.Add(
+           Error.Validation(
+               description: $"O ingresso com o id {ticketId} não foi encontrado"
+           )
+       );
+            return errors;
+        }
+
+        if (ticket.IsUsed == true) {
+                errors.Add(
+               Error.Validation(
+                   description: $"O ingresso com o id {ticketId} já foi usado"
+               ));
+
+                return errors;
+            }
+
+            ticket.IsUsed = true;
+
+        await _accountDBContext.SaveChangesAsync();
+            return Result.Updated;
+        }
+
+        public async Task<ErrorOr<RoomModel>> AddSeatAsync(SeatModel seat)
     {
         List<Error> errors = new();
 

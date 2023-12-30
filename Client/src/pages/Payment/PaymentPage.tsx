@@ -92,7 +92,7 @@ function PaymentPage() {
         </InnerInformationContainer>
         <InnerInformationContainer $hasMargin="3.4rem">
           <InformationText>Desconto aplicado</InformationText>
-          <InformationText>{discount}</InformationText>
+          <InformationText>{`R$ ${discount}`}</InformationText>
         </InnerInformationContainer>
         <Divider />
         <InnerInformationContainer>

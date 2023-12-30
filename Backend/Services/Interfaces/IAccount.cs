@@ -9,7 +9,7 @@ public interface IAccount
 {
     Task<List<UserDTO>> GetUsersAsync();
     Task<ErrorOr<UserDTO>> GetUserByIdAsync(string userId);
-    Task<ApplicationUser> FindByEmailAsync(string userName);
+    Task<ErrorOr<ApplicationUser>> FindByEmailAsync(string email);
     Task<bool> CheckPasswordAsync(ApplicationUser user, string password);
     Task<IdentityResult> CreateAsync(ApplicationUser user, string password);
     Task<IdentityResult> AddToRoleAsync(ApplicationUser user, string role);

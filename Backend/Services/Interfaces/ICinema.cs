@@ -18,6 +18,7 @@ public interface ICinema
     Task<GiftCardModel> CreateGiftCodigoAsync();
     Task<ErrorOr<RoomModel>> UpdateRoomAsync(Guid roomId, RoomModel roomEdit);
     Task<ErrorOr<Updated>> UseGiftCardAsync(Guid giftcode);
+    Task<ErrorOr<Updated>> UseTicketAsync(Guid ticketId);
     Task<ErrorOr<RoomModel>> AddSeatAsync(SeatModel seat);
     Task<ErrorOr<Deleted>> DeleteRoomAsync(Guid roomId);
 }

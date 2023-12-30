@@ -175,9 +175,17 @@ export const PostersCarouselInner = styled(motion.div)`
   @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
     gap: 3rem;
   }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletPortraitUp}) {
+    gap: 4rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletLandscapeUp}) {
+    gap: 5rem;
+  }
 `;
 
-export const CarouselItem = styled(motion.div)`
+export const CarouselItem = styled(motion.div)<AppearanceProps>`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
     min-height: 13rem;
     min-width: 9rem;
@@ -196,9 +204,20 @@ export const CarouselItem = styled(motion.div)`
 
 export const CarouselImage = styled(motion.img)`
   @media (min-width: ${(props) => props.theme.breakPoints.smallerPhone}) {
-    width: 100%;
-    height: 100%;
+    object-fit: cover;
+    height: 13rem;
+    width: 9rem;
     pointer-events: none;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
+    height: 20.3rem;
+    width: 13.5rem;
+  }
+
+  @media (min-width: ${(props) => props.theme.breakPoints.tabletPortraitUp}) {
+    height: 26.2rem;
+    width: 18rem;
   }
 `;
 

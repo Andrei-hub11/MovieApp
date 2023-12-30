@@ -207,6 +207,14 @@ const useRoom = () => {
     }));
   };
 
+  const handleRedirectToPayment = () => {
+    if (cartItems.length === 0) {
+      toast.warning("Nenhum assento foi selecionado");
+      return;
+    }
+    redirectTo("/pagamento");
+  };
+
   return {
     isProcessing,
     RoomListMovieSelected,
@@ -223,7 +231,7 @@ const useRoom = () => {
     setDateList,
     isSeatSelected,
     setIsSeatSelected,
-
+    handleRedirectToPayment,
     handleChangeSeats,
     formatDates,
     handleSelectedDate,

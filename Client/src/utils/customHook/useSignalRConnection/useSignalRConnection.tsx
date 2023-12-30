@@ -8,7 +8,6 @@ const useSignalRConnection = (token: string | null) => {
   const [notifications, setNotifications] = useState<string[] | []>([]);
 
   const handleConnectionError = (error: Error) => {
-    // Aqui você pode adicionar lógica para exibir o erro de acordo com a sua preferência
     toast.error(`Erro ao iniciar a conexão com o SignalR: ${error.message}`);
   };
 

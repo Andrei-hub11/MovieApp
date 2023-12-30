@@ -8,6 +8,7 @@ import { TicketsContainer } from "./TicketsPageStyles";
 
 import Indicator from "../../components/SectionIndicator/Indicator";
 import TicketPanel from "../../components/TicketList/TicketList";
+import usePurchaseReset from "../../utils/customHook/usePurchaseReset/usePurchaseReset";
 
 interface ticketsProps {
   // para garantir que o indicator não vai ser renderizado desnecessariamente
@@ -16,6 +17,8 @@ interface ticketsProps {
 
 function TicketsPage({ isUnique }: ticketsProps) {
   const { User } = useTypedSelector((state) => state.account);
+
+  usePurchaseReset();
 
   const indicatorProps: IndicatorProps = {
     sectionName: "Meus ingressos",

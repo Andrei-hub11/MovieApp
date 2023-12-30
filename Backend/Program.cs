@@ -110,6 +110,8 @@ var builder = WebApplication.CreateBuilder(args);
 }
 
 var app = builder.Build();
+
+// desativar isso durante manuntenção nos modelos
 MigrateData.CreateInitialMigrate(app.Services);
  await DeleteRecord.DeleteRecordAsync(app.Configuration);
 await SeedData.CreateInitialsRolesAsync(app.Services);

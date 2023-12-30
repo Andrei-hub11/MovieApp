@@ -346,7 +346,32 @@ public class CinemaController : ControllerBase
         {
             return StatusCode(500, new
             {
-                Message = "Ocorreu um erro durante a criação da sala.",
+                Message = "Ocorreu um erro ao marcar o cartão de presente como utilizado.",
+                Error = ex.Message
+            });
+        }
+    }
+
+    [Authorize(Policy = "Admin")]
+    [HttpPut("update-ticket/{ticketId}")]
+    public async Task<IActionResult> UpdateTicket(Guid ticketId)
+    {
+
+        try
+        {
+            var result = await _cinemaService.UseTicketAsync(ticketId);
+            if (result.IsError)
+            {
+                var errorMessages = result.Errors.Select(error => error.Description).ToList();
+                return BadRequest(new { Message = "Algo deu errado", Errors = errorMessages });
+            }
+            return Ok(true);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                Message = "Ocorreu um erro ao marcar o ingresso como utilizado.",
                 Error = ex.Message
             });
         }

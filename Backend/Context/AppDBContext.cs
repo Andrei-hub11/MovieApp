@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Reflection.Emit;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata;
 
 namespace Backend.Context;
 
@@ -41,8 +42,17 @@ public class AppDBContext: DbContext
       .Property(room => room.RoomNumber).IsRequired();
         builder.Entity<RoomModel>()
    .Property(room => room.MovieCategory).IsRequired();
+        builder.Entity<RoomModel>().Property(room => room.CreatedAt)
+  .HasDefaultValueSql("GETDATE()");
+        builder.Entity<RoomModel>().Property(room => room.UpdatedAt)
+ .HasDefaultValueSql("GETDATE()")
+ .ValueGeneratedOnUpdate();
+        builder.Entity<RoomModel>()
+        .ToTable(room => room.HasTrigger("Room_UPDATE"));
+
         builder.Entity<SeatModel>()
            .Property(s => s.SeatNumber).IsRequired();
+
         
         var stringListConverter = new ValueConverter<List<string>, string>(
         v => string.Join(',', v),
@@ -69,8 +79,15 @@ public class AppDBContext: DbContext
             .IsRequired()
             .HasDefaultValue(false);
         builder.Entity<GiftCardModel>().Property(gift => gift.GiftCodigo).HasDefaultValueSql("NEWID()");
+        builder.Entity<GiftCardModel>().Property(gift => gift.CreatedAt)
+.HasDefaultValueSql("GETDATE()");
+        builder.Entity<GiftCardModel>().Property(gift => gift.UpdatedAt)
+ .HasDefaultValueSql("GETDATE()")
+ .ValueGeneratedOnUpdate();
+     builder.Entity<GiftCardModel>()
+      .ToTable(gift => gift.HasTrigger("GiftCard_UPDATE"));
 
-       
+
         base.OnModelCreating(builder);
     }
 

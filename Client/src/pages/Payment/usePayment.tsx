@@ -100,15 +100,15 @@ const usePayment = () => {
     }
 
     const newOrder: TicketData = {
-      Title: currentRoom.MovieTitle,
-      Subtitle: currentRoom.MovieSubtitle,
+      MovieTitle: currentRoom.MovieTitle,
+      MovieSubtitle: currentRoom?.MovieSubtitle,
       RoomNumber: currentRoom.RoomNumber,
       EventDateTime: {
         Date: currentRoom.EventDateTime,
         Time: dayjs(currentRoom.EventDateTime).format("HH:mm:ss"),
       },
       OrderId: orderId,
-      AmountPaid: total,
+      AmountPaid: isUsedGift ? 0 : total,
       PurchasedSeats: cartItems.flatMap(({ SeatNumber }) => SeatNumber),
       UserId: User.Id,
     };

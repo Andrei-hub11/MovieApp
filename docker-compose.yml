@@ -23,7 +23,7 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
     ports:
       - "5204:80"
-      - "5254:443"
+      - "7238:443"
     volumes:
       - ~/.aspnet/https:/https:ro
     depends_on:
@@ -39,7 +39,7 @@ services:
     depends_on:
       - backend
     environment:
-      - VITE_MOVIE_APP_API_URL=http://backend:7238
+      - VITE_MOVIE_APP_API_URL=https://localhost:7238
     networks:
       - mynetwork
 

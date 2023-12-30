@@ -57,6 +57,7 @@ function RoomPage() {
     isSeatSelected,
     handleSelectedDate,
     handleSelectedTime,
+    handleRedirectToPayment,
     hoursList,
     handleSelectedSeat,
   } = useRoom();
@@ -206,12 +207,7 @@ function RoomPage() {
         </PrimaryInformationContainer>
         <RoomNav>
           <PriceInformation>{`R$ ${subtotal}`}</PriceInformation>
-          <RoomBtn
-            $primary={true}
-            onClick={() => {
-              redirectTo("/pagamento");
-            }}
-          >
+          <RoomBtn $primary={true} onClick={handleRedirectToPayment}>
             Continuar
           </RoomBtn>
         </RoomNav>

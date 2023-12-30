@@ -18,8 +18,8 @@ import CheckboxVariantIcon from "../../assets/checkbox-variant.svg";
 interface TicketsProps {
   tickets: UserTickets[];
   showCheckbox: boolean;
-  handleSum?: () => void | undefined;
-  handleDecrement?: () => void | undefined;
+  handleSum?: (ticket: UserTickets) => void | undefined;
+  handleDecrement?: (ticket: UserTickets) => void | undefined;
 }
 
 interface CheckboxState {
@@ -52,15 +52,15 @@ function TicketPanel({
     >
       {tickets?.map((ticket) => (
         <ItemContainer
-          key={ticket.UserId}
-          id={ticket.UserId}
-          $isUsed={ticket.isUsed}
+          key={ticket.Id}
+          id={ticket.Id}
+          $isUsed={ticket.IsUsed}
           $isUnique={ticket.PurchasedSeats.length >= 4}
           role="ingresso"
         >
           <TicketInformationContainer>
-            <MovieTitle>{ticket.Title}</MovieTitle>
-            <MovieSubtitle>{ticket.Subtitle}</MovieSubtitle>
+            <MovieTitle>{ticket.MovieTitle}</MovieTitle>
+            <MovieSubtitle>{ticket.MovieSubtitle}</MovieSubtitle>
           </TicketInformationContainer>
           <TicketInformationContainer>
             <InformationTitle>ID do Pedido</InformationTitle>
@@ -70,7 +70,7 @@ function TicketPanel({
             <TicketInformationContainer>
               <InformationTitle>Horário</InformationTitle>
               <MovieSubtitle>
-                {dayjs(ticket.EventDateTime.Time).format("HH:mm A")}
+                {dayjs(ticket.EventDateTime.Date).format("HH:mm A")}
               </MovieSubtitle>
             </TicketInformationContainer>
             <TicketInformationContainer>
@@ -100,21 +100,19 @@ function TicketPanel({
               </MovieSubtitle>
             </TicketInformationContainer>
           </ItemInnerContainer>
-          {showCheckbox && !ticket.isUsed ? (
+          {showCheckbox && !ticket.IsUsed ? (
             <IconContainer
               onClick={() => {
-                handleChangeCheckbox(ticket.UserId);
-                if (!isChecked[ticket.UserId] && handleSum) {
-                  handleSum();
+                handleChangeCheckbox(ticket.Id);
+                if (!isChecked[ticket.Id] && handleSum) {
+                  handleSum(ticket);
                   return;
                 }
-                handleDecrement && handleDecrement();
+                handleDecrement && handleDecrement(ticket);
               }}
             >
               <img
-                src={
-                  isChecked[ticket.UserId] ? CheckboxVariantIcon : CheckboxIcon
-                }
+                src={isChecked[ticket.Id] ? CheckboxVariantIcon : CheckboxIcon}
                 alt="icone de checkbox"
               />
             </IconContainer>
