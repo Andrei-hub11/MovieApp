@@ -209,6 +209,7 @@ const accountSlice = createSlice({
             UserName: action.payload.User.UserName,
             Email: action.payload.User.Email,
           };
+          state.Role = action.payload.Role;
         }
       )
       .addCase(updateProfileUser.rejected, (state, action) => {

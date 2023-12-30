@@ -91,7 +91,7 @@ public class AccountController : ControllerBase
         {
             return StatusCode(500, new
             {
-                Message = "Ocorreu um erro durante a busca dos usuários.",
+                Message = "Ocorreu um erro durante ao tentar recuperar o usuário.",
                 Error = ex.Message
             });
         }

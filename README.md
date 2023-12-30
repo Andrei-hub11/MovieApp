@@ -8,7 +8,7 @@
 
 - Rotas Protegidas : Tanto no backend quanto no frontend, garantindo a segurança e restrição de acesso a áreas específicas do aplicativo.
 - Gestão de Salas : Capacidade de criar, atualizar e excluir salas de cinema, permitindo uma administração flexível da infraestrutura.
-- Gift Cards : Oferece a opção de criar gift cards, possibilitando aos usuários presentear amigos ou familiares com acessos ou descontos especiais.
+- Gift Cards : Oferece a opção de criar gift cards, possibilitando uma forma interessante de pagar sem exigir dados pessoais.
 - Geração de Tickets : Permite a geração de ingressos para os filmes e sessões disponíveis.
 - Marcação de Tickets como Utilizados : Funcionalidade para acompanhar e registrar os ingressos utilizados pelos usuários.
 - Atualização de Informações de Perfil : Os usuários têm a possibilidade de atualizar suas informações pessoais, garantindo uma experiência personalizada.
@@ -19,7 +19,7 @@
 
 **Certifique-se de ter o Docker e o Docker Compose instalados em sua máquina.**
 
-Testando o Aplicativo de Chat:
+Testando o Aplicativo de Cinema:
 
 - Clonando o Repositório:
   Clone o repositório do aplicativo para o seu sistema.
@@ -30,6 +30,7 @@ Testando o Aplicativo de Chat:
 - Antes de Executar o Comando `docker-compose up -d`:
   Antes de executar o comando para iniciar os contêineres, é necessário seguir as instruções para obter um certificado válido. Você pode gerar um certificado seguindo as orientações fornecidas [aqui](https://learn.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-6.0#windows-using-linux-containers).
   Após gerar o certificado, substitua a senha utilizada em `ASPNETCORE_Kestrel__Certificates__Default__Password` no arquivo docker-compose.yml pelo certificado gerado.
+  Por favor, se ao rodar o container, o backend não for iniciado corretamente, faça `docker-compose down` e depois `docker-compose up -d` novamenete, pois pode ser que o banco de dados não tenha ficado pronto há tempo na inicialização, apesar da configuração.
 
 - Registrando um Usuário:
   Abra seu navegador e acesse **http://localhost:5173/register**. Você será direcionado para a página de registro do aplicativo.
@@ -41,7 +42,7 @@ Testando o Aplicativo de Chat:
 
 # Endpoints:
 
-### Criar Nova Função
+### Cria Nova Função
 
 - URL: /api/v1/create-role
 - Método HTTP: POST
@@ -77,7 +78,7 @@ Testando o Aplicativo de Chat:
 }
 ```
 
-### Registrar Usuário
+### Registra Usuário
 
 - URL: /api/v1/register
 - Método HTTP: POST
@@ -98,6 +99,16 @@ Testando o Aplicativo de Chat:
 ```
 {
 "token": "Token de Autenticação"
+"User": {
+        "Id": "b642caad-d46d-4e31-bcd9-97828dcf5d74",
+        "UserName": "nathalia1117",
+        "Email": "nathalia@1227gmail.com",
+        "ProfileImagePath": null,
+        "Tickets": []
+    },
+    "Role": [
+        "User"
+    ]
 }
 ```
 
@@ -138,6 +149,16 @@ Testando o Aplicativo de Chat:
 ```
 {
 "token": "Token de Autenticação"
+  "User": {
+        "Id": "b642caad-d46d-4e31-bcd9-97828dcf5d74",
+        "UserName": "nathalia1117",
+        "Email": "nathalia@1227gmail.com",
+        "ProfileImagePath": null,
+        "Tickets": []
+    },
+    "Role": [
+        "User"
+    ]
 }
 ```
 
@@ -154,6 +175,37 @@ Testando o Aplicativo de Chat:
 ```
 {
 "Message": "Ocorreu um erro durante o login.",
+"Error": "Mensagem de erro específica"
+}
+```
+
+### Recupera Dados do Usuário
+
+- Endpoint: /api/v1/get-me
+- Método HTTP: GET
+- Cabeçalho: Exige o token JWT de usuário do tipo 'Bearer' que contenha a função 'Admin' ou 'User' ao ser decodificado.
+- Resposta de Sucesso (200 OK):
+
+```
+{
+    "User": {
+        "Id": "b642caad-d46d-4e31-bcd9-97828dcf5d74",
+        "UserName": "nathalia1117",
+        "Email": "nathalia@1227gmail.com",
+        "ProfileImagePath": null,
+        "Tickets": []
+    },
+    "Role": [
+        "User"
+    ]
+}
+```
+
+- Resposta de Erro (500 Internal Server Error):
+
+```
+{
+"Message": "Ocorreu um erro durante ao tentar recuperar o usuário.",
 "Error": "Mensagem de erro específica"
 }
 ```
