@@ -85,6 +85,7 @@ const purchaseSlice = createSlice({
     },
     resetPurchase(state) {
       state.isProcessing = false;
+      state.isUsedGift = false;
       state.cartItems = [];
       state.orderId = "";
       state.subtotal = 0;
