@@ -365,6 +365,7 @@ export const HourItem = styled.div<AppearanceProps>`
       $primary ? colors.primary : colors.text};
     color: ${({ theme: { colors }, $primary }) =>
       $primary ? colors.light : colors.bg};
+    cursor: pointer;
   }
 
   @media (min-width: ${(props) => props.theme.breakPoints.phoneOnly}) {
